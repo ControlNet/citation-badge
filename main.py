@@ -8,11 +8,6 @@ from selenium import webdriver
 import undetected_chromedriver as uc
 from scholarly import scholarly
 
-from pyvirtualdisplay import Display
-display = Display(visible=0, size=(1200, 1200))  
-display.start()
-
-
 parser = argparse.ArgumentParser(
     description='Get citations from Google Scholar')
 parser.add_argument('--author', type=str, help='Author name')
@@ -42,10 +37,7 @@ for pub in author["publications"]:
 
 if args.wos:
     # use selenium headless
-    # options = webdriver.ChromeOptions()
-    # options.add_argument("--headless")
-    # driver = webdriver.Chrome(options=options)
-    driver = uc.Chrome(headless=False, use_subprocess=False)
+    driver = uc.Chrome(headless=False, use_subprocess=True)
     driver.get(f"https://www.webofscience.com/wos/author/record/{args.wos}")
     # wait for the page to load
     for _ in range(10):
@@ -57,7 +49,7 @@ if args.wos:
         print("waiting for page to load")
     else:
         print("timeout")
-        exit(1)
+        exit(0)
 
     element = elements[0]
     parent_element = element.find_element(By.XPATH, "..")
