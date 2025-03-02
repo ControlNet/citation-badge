@@ -25,7 +25,7 @@ jobs:
           pip install -r requirements.txt
 
       - name: Install xvfb
-        run: sudo apt update && apt install xvfb
+        run: sudo apt update && sudo apt install xvfb
 
       - name: Generate badges
         run: python main.py --author "${{ secrets.AUTHOR }}" --wos "${{ secrets.WOS }}"
