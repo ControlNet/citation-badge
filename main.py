@@ -40,7 +40,7 @@ if args.wos:
     # options = webdriver.ChromeOptions()
     # options.add_argument("--headless")
     # driver = webdriver.Chrome(options=options)
-    driver = uc.Chrome(headless=True, use_subprocess=False)
+    driver = uc.Chrome(headless=False, use_subprocess=False)
     driver.get(f"https://www.webofscience.com/wos/author/record/{args.wos}")
     # wait for the page to load
     for _ in range(10):
