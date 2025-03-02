@@ -1,9 +1,11 @@
 import argparse
 import os
+import time
 
 import requests
 from selenium.webdriver.common.by import By
 from selenium import webdriver
+import undetected_chromedriver as uc
 from scholarly import scholarly
 
 parser = argparse.ArgumentParser(
@@ -35,16 +37,22 @@ for pub in author["publications"]:
 
 if args.wos:
     # use selenium headless
-    options = webdriver.ChromeOptions()
-    options.add_argument("--headless")
-    driver = webdriver.Chrome(options=options)
+    # options = webdriver.ChromeOptions()
+    # options.add_argument("--headless")
+    # driver = webdriver.Chrome(options=options)
+    driver = uc.Chrome(headless=True, use_subprocess=False)
     driver.get(f"https://www.webofscience.com/wos/author/record/{args.wos}")
     # wait for the page to load
-    while True:
+    for _ in range(10):
         elements = driver.find_elements(By.CLASS_NAME, "summary-label")
         elements = [e for e in elements if "Verified peer reviews" in e.text]
         if len(elements) > 0:
             break
+        time.sleep(1)
+        print("waiting for page to load")
+    else:
+        print("timeout")
+        exit(1)
 
     element = elements[0]
     parent_element = element.find_element(By.XPATH, "..")
