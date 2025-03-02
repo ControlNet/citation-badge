@@ -8,6 +8,11 @@ from selenium import webdriver
 import undetected_chromedriver as uc
 from scholarly import scholarly
 
+from pyvirtualdisplay import Display
+display = Display(visible=0, size=(1200, 1200))  
+display.start()
+
+
 parser = argparse.ArgumentParser(
     description='Get citations from Google Scholar')
 parser.add_argument('--author', type=str, help='Author name')
