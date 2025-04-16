@@ -28,10 +28,10 @@ jobs:
         run: sudo apt update && sudo apt install xvfb
 
       - name: Download previous dist file
-        run: | 
-          git clone https://github.com/ControlNet/citation-badge.git -b dist dist
-          rm -rf dist/.git
-          rm dist/CNAME
+        uses: actions/checkout@v2
+        with:
+          ref: dist
+          path: dist
 
       - name: Generate badges
         run: python main.py --author "${{ secrets.AUTHOR }}" --wos "${{ secrets.WOS }}"
