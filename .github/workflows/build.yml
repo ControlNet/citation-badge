@@ -9,7 +9,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
       - uses: actions/checkout@v2
@@ -17,15 +17,12 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: "3.10"
+          python-version: "3.12"
 
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-
-      - name: Install xvfb
-        run: sudo apt update && sudo apt install xvfb
 
       - name: Download previous dist file
         uses: actions/checkout@v2
@@ -34,11 +31,13 @@ jobs:
           path: dist
 
       - name: Generate badges
-        run: python main.py --author "${{ secrets.AUTHOR }}" --wos "${{ secrets.WOS }}"
+        shell: bash
+        run: timeout 2m python main.py --author '${{ secrets.AUTHOR }}' --wos '${{ secrets.WOS }}'
 
       - name: Clean files
         run: |
           rm -rf .git
+          rm -rf dist/.git
           cd dist
           echo "cite.controlnet.space" > CNAME
           git init

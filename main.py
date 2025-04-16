@@ -4,13 +4,8 @@ import time
 
 import requests
 from selenium.webdriver.common.by import By
-from selenium import webdriver
 import undetected_chromedriver as uc
 from scholarly import scholarly
-
-from pyvirtualdisplay import Display
-display = Display(visible=False, size=(1920, 1080))
-display.start()
 
 parser = argparse.ArgumentParser(
     description='Get citations from Google Scholar')
@@ -18,9 +13,11 @@ parser.add_argument('--author', type=str, help='Author name')
 parser.add_argument('--wos', type=str, help='Web of Science ID (optional)')
 
 args = parser.parse_args()
-
+print("Searching author...")
 search_query = scholarly.search_author(args.author)
+print("Author found")
 author = scholarly.fill(next(search_query))
+print("Author filled")
 
 total_cite = author["citedby"]
 
@@ -31,6 +28,8 @@ with open(os.path.join("dist", "all.svg"), "wb") as f:
     f.write(requests.get(
         f"https://img.shields.io/badge/citations-{total_cite}-_.svg?color=3388ee&style=flat-square").content)
 
+print("All.svg generated")
+
 for pub in author["publications"]:
     pub_id = pub["author_pub_id"].replace(":", "_")
     pub_cite = pub["num_citations"]
@@ -39,9 +38,12 @@ for pub in author["publications"]:
         f.write(requests.get(
             f"https://img.shields.io/badge/citations-{pub_cite}-_.svg?color=3388ee&style=flat-square").content)
 
+print("All svg generated")
+
 if args.wos:
+    print("Searching wos...")
     # use selenium headless
-    driver = uc.Chrome(headless=False, use_subprocess=True)
+    driver = uc.Chrome(headless=True, use_subprocess=True)
     driver.get(f"https://www.webofscience.com/wos/author/record/{args.wos}")
     # wait for the page to load
     for _ in range(10):
