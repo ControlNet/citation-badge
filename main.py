@@ -8,6 +8,7 @@ from selenium.webdriver.common.by import By
 import undetected_chromedriver as uc
 from scholarly import scholarly
 from scholarly import ProxyGenerator
+from scholarly._proxy_generator import MaxTriesExceededException
 
 parser = argparse.ArgumentParser(
     description='Get citations from Google Scholar')
@@ -15,37 +16,41 @@ parser.add_argument('--author', type=str, help='Author name')
 parser.add_argument('--wos', type=str, help='Web of Science ID (optional)')
 
 args = parser.parse_args()
-print("Setup proxy...", flush=True)
-pg = ProxyGenerator()
-pg.FreeProxies()
-scholarly.use_proxy(pg)
+# print("Setup proxy...", flush=True)
+# pg = ProxyGenerator()
+# pg.FreeProxies()
+# scholarly.use_proxy(pg)
 
 print("Searching author...", flush=True)
-search_query = scholarly.search_author(args.author)
-print("Author found", flush=True)
-author = scholarly.fill(next(search_query))
-print("Author filled", flush=True)
+try:
+    search_query = scholarly.search_author(args.author)
+    print("Author found", flush=True)
+    author = scholarly.fill(next(search_query))
+    print("Author filled", flush=True)
+except MaxTriesExceededException:
+    print("Max tries exceeded", flush=True)
+    exit(0)
+else:
+    total_cite = author["citedby"]
 
-total_cite = author["citedby"]
+    if not os.path.exists("dist"):
+        os.makedirs("dist")
 
-if not os.path.exists("dist"):
-    os.makedirs("dist")
-
-with open(os.path.join("dist", "all.svg"), "wb") as f:
-    f.write(requests.get(
-        f"https://img.shields.io/badge/citations-{total_cite}-_.svg?color=3388ee&style=flat-square").content)
-
-print("All.svg generated", flush=True)
-
-for pub in author["publications"]:
-    pub_id = pub["author_pub_id"].replace(":", "_")
-    pub_cite = pub["num_citations"]
-
-    with open(os.path.join("dist", f"{pub_id}.svg"), "wb") as f:
+    with open(os.path.join("dist", "all.svg"), "wb") as f:
         f.write(requests.get(
-            f"https://img.shields.io/badge/citations-{pub_cite}-_.svg?color=3388ee&style=flat-square").content)
+            f"https://img.shields.io/badge/citations-{total_cite}-_.svg?color=3388ee&style=flat-square").content)
 
-print("All svg generated", flush=True)
+    print("All.svg generated", flush=True)
+
+    for pub in author["publications"]:
+        pub_id = pub["author_pub_id"].replace(":", "_")
+        pub_cite = pub["num_citations"]
+
+        with open(os.path.join("dist", f"{pub_id}.svg"), "wb") as f:
+            f.write(requests.get(
+                f"https://img.shields.io/badge/citations-{pub_cite}-_.svg?color=3388ee&style=flat-square").content)
+
+    print("All svg generated", flush=True)
 
 if args.wos:
     print("Searching wos...", flush=True)
