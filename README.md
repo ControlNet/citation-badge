@@ -28,7 +28,8 @@ Reviews badge: <img src="https://cite.controlnet.space/review.svg">
 
 1. **Fork this repository**
 2. **Set up GitHub Secrets** (Repository Settings → Secrets → Actions):
-   - `AUTHOR`: Your name as it appears on Google Scholar (required)
+   - `AUTHOR`: Your name as it appears on Google Scholar (at least one of `SCHOLAR` or `AUTHOR` is required)
+   - `SCHOLAR`: Your Google Scholar ID (at least one of `SCHOLAR` or `AUTHOR` is required)
    - `WOS`: Your Web of Science ID (optional)
    - `CNAME`: Custom domain for GitHub Pages (optional)
 3. **Enable GitHub Pages** to use the `dist` branch
