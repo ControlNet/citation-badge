@@ -1,17 +1,34 @@
 import argparse
 import os
 import time
+import json
+from datetime import datetime
 
 import requests
 from selenium.webdriver.common.by import By
 import undetected_chromedriver as uc
 from scholarly import scholarly
-from scholarly import ProxyGenerator
 from scholarly._proxy_generator import MaxTriesExceededException
 
 # --- Summary Status Initialization ---
 gs_status = {"success": False, "reason": "Not attempted"}
 wos_status = {"success": False, "reason": "Not attempted"}
+# --- Citation Metadata Initialization ---
+citation_metadata = {
+    "generated_at": datetime.now().isoformat(),
+    "google_scholar": {
+        "status": "not_attempted",
+        "total_citations": 0,
+        "author_info": {},
+        "publications": [],
+        "error": None
+    },
+    "web_of_science": {
+        "status": "not_attempted", 
+        "peer_reviews": 0,
+        "error": None
+    }
+}
 # -----------------------------------
 
 parser = argparse.ArgumentParser(
@@ -23,10 +40,6 @@ parser.add_argument('--gen_summary', action='store_true',
                     help='Generate summary for github actions')
 
 args = parser.parse_args()
-# print("Setup proxy...", flush=True)
-# pg = ProxyGenerator()
-# pg.FreeProxies()
-# scholarly.use_proxy(pg)
 
 print("Searching author...", flush=True)
 if not os.path.exists("dist"):
@@ -54,36 +67,65 @@ try:
     print("Author filled", flush=True)
     total_cite = author["citedby"]
 
+    # Update citation metadata with Google Scholar data
+    citation_metadata["google_scholar"]["status"] = "success"
+    citation_metadata["google_scholar"]["total_citations"] = total_cite
+    citation_metadata["google_scholar"]["author_info"] = {
+        "name": author.get("name", ""),
+        "affiliation": author.get("affiliation", ""),
+        "scholar_id": author.get("scholar_id", ""),
+        "interests": author.get("interests", []),
+    }
+
     with open(os.path.join("dist", "all.svg"), "wb") as f:
         f.write(requests.get(
             f"https://img.shields.io/badge/citations-{total_cite}-_.svg?color=3388ee&style=flat-square").content)
 
     print("All.svg generated", flush=True)
 
+    # Collect publication data for metadata
+    publications_data = []
     for pub in author["publications"]:
         pub_id = pub["author_pub_id"].replace(":", "_")
         pub_cite = pub["num_citations"]
+        
+        # Store publication metadata
+        pub_data = {
+            "author_pub_id": pub.get("author_pub_id", ""),
+            "title": pub.get("bib", {}).get("title", ""),
+            "year": pub.get("bib", {}).get("pub_year", ""),
+            "citations": pub_cite,
+        }
+        publications_data.append(pub_data)
 
         with open(os.path.join("dist", f"{pub_id}.svg"), "wb") as f:
             f.write(requests.get(
                 f"https://img.shields.io/badge/citations-{pub_cite}-_.svg?color=3388ee&style=flat-square").content)
 
+    citation_metadata["google_scholar"]["publications"] = publications_data
     print("All pub svg generated", flush=True)
     gs_status = {"success": True, "reason": f"Total citations: {total_cite}"}
 
 except MaxTriesExceededException:
     print("Max tries exceeded, skip google scholar badges", flush=True)
+    citation_metadata["google_scholar"]["status"] = "failed"
+    citation_metadata["google_scholar"]["error"] = "Max proxy retries exceeded"
     gs_status = {"success": False, "reason": "Max proxy retries exceeded"}
 except StopIteration:
     print("Author not found", flush=True)
+    citation_metadata["google_scholar"]["status"] = "failed"
+    citation_metadata["google_scholar"]["error"] = f"Author '{args.author}' not found"
     gs_status = {"success": False,
                  "reason": f"Author '{args.author}' not found"}
 except Exception as e:
     print(f"An unexpected error occurred with Google Scholar: {e}", flush=True)
+    citation_metadata["google_scholar"]["status"] = "failed"
+    citation_metadata["google_scholar"]["error"] = str(e)
     gs_status = {"success": False, "reason": f"Unexpected error: {e}"}
 
 if args.wos:
     print("Searching wos...", flush=True)
+    citation_metadata["web_of_science"]["status"] = "processing"
     wos_status["reason"] = "Processing"  # Initial status for WOS attempt
     driver = None  # Initialize driver to None
     try:
@@ -114,6 +156,8 @@ if args.wos:
 
         if review_count is None:
             print("timeout or element not found after retries", flush=True)
+            citation_metadata["web_of_science"]["status"] = "failed"
+            citation_metadata["web_of_science"]["error"] = "Timeout or 'Verified peer reviews' element not found"
             wos_status = {
                 "success": False, "reason": "Timeout or 'Verified peer reviews' element not found"}
         else:
@@ -122,17 +166,32 @@ if args.wos:
                 f.write(requests.get(
                     f"https://img.shields.io/badge/peer reviews-{review_count}-_.svg?color=8A2BE2&style=flat-square").content)
             print("Review badge generated", flush=True)
+            citation_metadata["web_of_science"]["status"] = "success"
+            citation_metadata["web_of_science"]["peer_reviews"] = int(review_count) if review_count.isdigit() else review_count
             wos_status = {"success": True,
                           "reason": f"Peer reviews: {review_count}"}
 
     except Exception as e:
         print(f"An error occurred during WOS processing: {e}", flush=True)
+        citation_metadata["web_of_science"]["status"] = "failed"
+        citation_metadata["web_of_science"]["error"] = str(e)
         wos_status = {"success": False, "reason": f"WOS Error: {e}"}
     finally:
         if driver:
             driver.quit()
 else:
+    citation_metadata["web_of_science"]["status"] = "skipped"
     wos_status["reason"] = "WOS ID not provided"
+
+# --- Save Citation Metadata JSON ---
+try:
+    citation_json_path = os.path.join("dist", "citation.json")
+    with open(citation_json_path, "w", encoding='utf-8') as f:
+        json.dump(citation_metadata, f, indent=2, ensure_ascii=False)
+    print(f"Citation metadata saved to {citation_json_path}", flush=True)
+except Exception as e:
+    print(f"Failed to save citation metadata: {e}", flush=True)
+# ------------------------------------
 
 # --- Generate Summary Markdown ---
 if args.gen_summary:
