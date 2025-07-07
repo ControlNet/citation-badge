@@ -186,9 +186,71 @@ else:
 # --- Save Citation Metadata JSON ---
 try:
     citation_json_path = os.path.join("dist", "citation.json")
-    with open(citation_json_path, "w", encoding='utf-8') as f:
-        json.dump(citation_metadata, f, indent=2, ensure_ascii=False)
-    print(f"Citation metadata saved to {citation_json_path}", flush=True)
+    
+    # Try to load previous citation data if it exists
+    previous_data = {}
+    if os.path.exists(citation_json_path):
+        try:
+            with open(citation_json_path, "r", encoding='utf-8') as f:
+                previous_data = json.load(f)
+            print("Previous citation data loaded", flush=True)
+        except Exception as e:
+            print(f"Could not load previous citation data: {e}", flush=True)
+    
+    # Determine if we should update the JSON file
+    should_update = False
+    final_data = {
+        "generated_at": datetime.now().isoformat(),
+        "google_scholar": {},
+        "web_of_science": {}
+    }
+    
+    # Handle Google Scholar data
+    if citation_metadata["google_scholar"]["status"] == "success":
+        # Use new successful data
+        final_data["google_scholar"] = citation_metadata["google_scholar"]
+        should_update = True
+        print("Using new Google Scholar data", flush=True)
+    else:
+        # Use previous data if available, otherwise use failed attempt data
+        if previous_data.get("google_scholar", {}).get("status") == "success":
+            final_data["google_scholar"] = previous_data["google_scholar"]
+            print("Preserving previous Google Scholar data due to current failure", flush=True)
+        else:
+            final_data["google_scholar"] = citation_metadata["google_scholar"]
+            print("No previous Google Scholar data to preserve", flush=True)
+    
+    # Handle Web of Science data
+    if citation_metadata["web_of_science"]["status"] == "success":
+        # Use new successful data
+        final_data["web_of_science"] = citation_metadata["web_of_science"]
+        should_update = True
+        print("Using new Web of Science data", flush=True)
+    elif citation_metadata["web_of_science"]["status"] == "skipped":
+        # For skipped WOS, preserve previous data if available
+        if previous_data.get("web_of_science", {}).get("status") == "success":
+            final_data["web_of_science"] = previous_data["web_of_science"]
+            print("Preserving previous Web of Science data (WOS skipped)", flush=True)
+        else:
+            final_data["web_of_science"] = citation_metadata["web_of_science"]
+    else:
+        # Use previous data if available, otherwise use failed attempt data
+        if previous_data.get("web_of_science", {}).get("status") == "success":
+            final_data["web_of_science"] = previous_data["web_of_science"]
+            print("Preserving previous Web of Science data due to current failure", flush=True)
+        else:
+            final_data["web_of_science"] = citation_metadata["web_of_science"]
+            print("No previous Web of Science data to preserve", flush=True)
+    
+    # Only update the file if we have at least one successful update, 
+    # or if there's no previous file
+    if should_update or not os.path.exists(citation_json_path):
+        with open(citation_json_path, "w", encoding='utf-8') as f:
+            json.dump(final_data, f, indent=2, ensure_ascii=False)
+        print(f"Citation metadata saved to {citation_json_path}", flush=True)
+    else:
+        print("No successful updates and previous data exists - preserving existing citation.json", flush=True)
+        
 except Exception as e:
     print(f"Failed to save citation metadata: {e}", flush=True)
 # ------------------------------------
