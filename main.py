@@ -2,6 +2,7 @@ import argparse
 import os
 import time
 import json
+import traceback
 from datetime import datetime
 
 import requests
@@ -119,6 +120,7 @@ except StopIteration:
                  "reason": f"Author '{args.author}' not found"}
 except Exception as e:
     print(f"An unexpected error occurred with Google Scholar: {e}", flush=True)
+    traceback.print_exc()
     citation_metadata["google_scholar"]["status"] = "failed"
     citation_metadata["google_scholar"]["error"] = str(e)
     gs_status = {"success": False, "reason": f"Unexpected error: {e}"}
