@@ -250,11 +250,25 @@ try:
         with open(citation_json_path, "w", encoding='utf-8') as f:
             json.dump(final_data, f, indent=2, ensure_ascii=False)
         print(f"Citation metadata saved to {citation_json_path}", flush=True)
+        
+        # Create status file for GitHub Actions
+        with open("citation_updated.flag", "w") as f:
+            f.write("true")
+        print("Citation update flag created", flush=True)
     else:
         print("No successful updates and previous data exists - preserving existing citation.json", flush=True)
+        # Create status file indicating no update
+        with open("citation_updated.flag", "w") as f:
+            f.write("false")
         
 except Exception as e:
     print(f"Failed to save citation metadata: {e}", flush=True)
+    # Create status file indicating failure
+    try:
+        with open("citation_updated.flag", "w") as f:
+            f.write("false")
+    except:
+        pass
 # ------------------------------------
 
 # --- Generate Summary Markdown ---

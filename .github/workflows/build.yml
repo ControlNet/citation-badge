@@ -49,6 +49,24 @@ jobs:
         shell: bash
         run: timeout 3m python -u main.py --author '${{ secrets.AUTHOR }}' --scholar='${{ secrets.SCHOLAR }}' --wos '${{ secrets.WOS }}' --gen_summary
 
+      - name: Check if citation data was updated
+        id: check_update
+        run: |
+          if [ -f "citation_updated.flag" ]; then
+            flag_value=$(cat citation_updated.flag)
+            if [ "$flag_value" = "true" ]; then
+              echo "updated=true" >> $GITHUB_OUTPUT
+              echo "Citation data was successfully updated"
+            else
+              echo "updated=false" >> $GITHUB_OUTPUT
+              echo "No citation data updates detected"
+            fi
+            rm -f citation_updated.flag
+          else
+            echo "updated=false" >> $GITHUB_OUTPUT
+            echo "Citation update flag not found"
+          fi
+
       - name: Adding summary
         run: cat summary.md >> $GITHUB_STEP_SUMMARY
 
@@ -79,3 +97,40 @@ jobs:
           branch: dist
           force: true
           directory: dist
+
+      - name: Wait for dist branch to be publicly available
+        if: ${{ steps.check_update.outputs.updated == 'true' && env.DEPLOY_TOKEN != '' }}
+        env:
+          DEPLOY_TOKEN: ${{ secrets.DEPLOY_TOKEN }}
+        run: |
+          echo "Waiting 300 seconds for dist branch to be publicly available..."
+          sleep 300
+
+      - name: Trigger deployment
+        if: ${{ steps.check_update.outputs.updated == 'true' && env.DEPLOY_TOKEN != '' }}
+        env:
+          DEPLOY_TOKEN: ${{ secrets.DEPLOY_TOKEN }}
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.DEPLOY_TOKEN }}
+          script: |
+            try {
+              const response = await github.rest.actions.createWorkflowDispatch({
+                owner: 'ControlNet',
+                repo: 'profile',
+                workflow_id: 'deploy.yml',
+                ref: 'main'
+              });
+              console.log('Successfully triggered deployment workflow');
+            } catch (error) {
+              console.log('Failed to trigger deployment:', error.message);
+              // Don't fail the entire workflow if deployment trigger fails
+            }
+
+      - name: Deployment skipped
+        if: ${{ steps.check_update.outputs.updated == 'true' && env.DEPLOY_TOKEN == '' }}
+        env:
+          DEPLOY_TOKEN: ${{ secrets.DEPLOY_TOKEN }}
+        run: |
+          echo "⚠️ Citation data was updated but deployment was skipped"
+          echo "💡 Add DEPLOY_TOKEN secret to enable automatic deployment triggering"
