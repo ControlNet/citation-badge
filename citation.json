@@ -1,0 +1,122 @@
+{
+  "generated_at": "2025-07-12T15:19:25.137278",
+  "google_scholar": {
+    "status": "success",
+    "total_citations": 321,
+    "author_info": {
+      "name": "Zhixi Cai",
+      "affiliation": "Research Fellow, Monash University",
+      "scholar_id": "-rpiDIoAAAAJ",
+      "interests": [
+        "computer vision",
+        "deepfake",
+        "multimodal",
+        "visual reasoning"
+      ]
+    },
+    "publications": [
+      {
+        "author_pub_id": "-rpiDIoAAAAJ:u-x6o8ySG0sC",
+        "title": "MARLIN: Masked Autoencoder for Facial Video Representation LearnINg",
+        "year": "2023",
+        "citations": 102
+      },
+      {
+        "author_pub_id": "-rpiDIoAAAAJ:zYLM7Y9cAGgC",
+        "title": "Do you really mean that? Content driven audio-visual deepfake dataset and multimodal method for temporal forgery localization",
+        "year": "2022",
+        "citations": 86
+      },
+      {
+        "author_pub_id": "-rpiDIoAAAAJ:5nxA0vEk-isC",
+        "title": "AV-Deepfake1M: A large-scale LLM-driven audio-visual deepfake dataset",
+        "year": "2024",
+        "citations": 47
+      },
+      {
+        "author_pub_id": "-rpiDIoAAAAJ:W7OEmFMy1HYC",
+        "title": "Glitch in the matrix: A large scale benchmark for content driven audio–visual forgery detection and localization",
+        "year": "2023",
+        "citations": 39
+      },
+      {
+        "author_pub_id": "-rpiDIoAAAAJ:YsMSGLbcyi4C",
+        "title": "HYDRA: A Hyper Agent for Dynamic Compositional Visual Reasoning",
+        "year": "2024",
+        "citations": 14
+      },
+      {
+        "author_pub_id": "-rpiDIoAAAAJ:roLk4NBRz8UC",
+        "title": "NEUSIS: A Compositional Neuro-Symbolic Framework for Autonomous Perception, Reasoning, and Planning in Complex UAV Search Missions",
+        "year": "2024",
+        "citations": 8
+      },
+      {
+        "author_pub_id": "-rpiDIoAAAAJ:8k81kl-MbHgC",
+        "title": "1M-Deepfakes Detection Challenge",
+        "year": "2024",
+        "citations": 6
+      },
+      {
+        "author_pub_id": "-rpiDIoAAAAJ:eQOLeE2rZwMC",
+        "title": "JRDB-Social: A Multifaceted Robotic Dataset for Understanding of Context and Dynamics of Human Interactions Within Social Groups",
+        "year": "2024",
+        "citations": 6
+      },
+      {
+        "author_pub_id": "-rpiDIoAAAAJ:Se3iqnhoufwC",
+        "title": "Hier-SLAM: Scaling-up Semantics in SLAM with a Hierarchically Categorical Gaussian Splatting",
+        "year": "2024",
+        "citations": 4
+      },
+      {
+        "author_pub_id": "-rpiDIoAAAAJ:YOwf2qJgpHMC",
+        "title": "Emolysis: A multimodal open-source group emotion analysis and visualization toolkit",
+        "year": "2024",
+        "citations": 4
+      },
+      {
+        "author_pub_id": "-rpiDIoAAAAJ:KlAtU1dfN6UC",
+        "title": "DWIM: Towards Tool-aware Visual Reasoning via Discrepancy-aware Workflow Generation & Instruct-Masking Tuning",
+        "year": "2025",
+        "citations": 2
+      },
+      {
+        "author_pub_id": "-rpiDIoAAAAJ:3fE2CSJIrl8C",
+        "title": "MRAC Track 1: 2nd Workshop on Multimodal, Generative and Responsible Affective Computing",
+        "year": "2024",
+        "citations": 2
+      },
+      {
+        "author_pub_id": "-rpiDIoAAAAJ:kNdYIx-mwKoC",
+        "title": "NAVER: A Neuro-Symbolic Compositional Automaton for Visual Grounding with Explicit Logic Reasoning",
+        "year": "2025",
+        "citations": 1
+      },
+      {
+        "author_pub_id": "-rpiDIoAAAAJ:Zph67rFs4hoC",
+        "title": "MRAC'24 Chairs' Welcome",
+        "year": "2024",
+        "citations": 0
+      },
+      {
+        "author_pub_id": "-rpiDIoAAAAJ:ufrVoPGSRksC",
+        "title": "Content-Driven Multimodal Deepfake Generation and Temporal Localization",
+        "year": "2024",
+        "citations": 0
+      },
+      {
+        "author_pub_id": "-rpiDIoAAAAJ:UeHWp8X0CEIC",
+        "title": "Pavlok-Nudge: A Feedback Mechanism for Atomic Behaviour Modification with Snoring Usecase",
+        "year": "2023",
+        "citations": 0
+      }
+    ],
+    "error": null
+  },
+  "web_of_science": {
+    "status": "failed",
+    "peer_reviews": 0,
+    "error": "Timeout or 'Verified peer reviews' element not found"
+  }
+}
