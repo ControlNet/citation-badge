@@ -45,6 +45,8 @@ Run the service:
 docker run --rm -d --name citation-badge \
   -p 8000:8000 \
   -v "$PWD/data:/data" \
+  -e PUID="$(id -u)" \
+  -e PGID="$(id -g)" \
   -e AUTHOR='Yann LeCun' \
   controlnet/citation-badge
 ```
@@ -59,6 +61,12 @@ Required env vars:
 
 - `AUTHOR` or `SCHOLAR` (set at least one)
 - `WOS` is optional and remains disabled by default in Docker unless `ENABLE_WOS=1`
+
+Optional runtime user mapping:
+
+- `PUID` defaults to `1000`
+- `PGID` defaults to `1000`
+- Set them to `$(id -u)` / `$(id -g)` if you want the containerized service process to match your current host user
 
 Mounted state volume:
 

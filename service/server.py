@@ -8,11 +8,13 @@ from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from importlib import import_module
 import json
+import logging
 import os
 import re
 import signal
 import shutil
 import subprocess
+import sys
 import tempfile
 import threading
 from types import FrameType, ModuleType
@@ -39,6 +41,23 @@ JSON_COMPATIBILITY_PATH = "/citation.json"
 SVG_CONTENT_TYPE = "image/svg+xml"
 _PUBLICATION_SVG_PATH = re.compile(r"^/[A-Za-z0-9][A-Za-z0-9_.-]*\.svg$")
 _WORKER_SCRIPT_PATH = "/app/main.py"
+_LOGGER = logging.getLogger("citation_badge.service")
+
+
+def _configure_runtime_logging() -> None:
+    if _LOGGER.handlers:
+        return
+
+    handler = logging.StreamHandler(sys.stdout)
+    handler.setFormatter(
+        logging.Formatter(
+            fmt="%(asctime)s %(levelname)s %(message)s",
+            datefmt="%Y-%m-%dT%H:%M:%SZ",
+        )
+    )
+    _LOGGER.addHandler(handler)
+    _LOGGER.setLevel(logging.INFO)
+    _LOGGER.propagate = False
 
 
 def _storage_module() -> ModuleType:
@@ -229,20 +248,40 @@ class ServiceRuntime:
         ) in {"ready", "stale"}:
             payload["service"]["status"] = "idle"
 
-        return self._save_status(payload)
+        payload = self._save_status(payload)
+        _LOGGER.info(
+            "service status synchronized: service_status=%s has_data=%s current_release=%s",
+            payload["service"].get("status"),
+            payload["storage"].get("has_data"),
+            payload["storage"].get("current_release"),
+        )
+        return payload
 
     def refresh(self, trigger_reason: str) -> None:
-        del trigger_reason
         if self._shutdown_requested.is_set():
+            _LOGGER.info(
+                "refresh skipped: trigger=%s reason=shutdown_requested",
+                trigger_reason,
+            )
             return
 
         previous_status = self._load_status()
         attempted_at = _timestamp_now()
         self._write_running_status(previous_status, attempted_at)
+        _LOGGER.info(
+            "refresh started: trigger=%s attempted_at=%s state_dir=%s",
+            trigger_reason,
+            attempted_at,
+            self.settings.state_dir,
+        )
 
         if not (self.settings.author or self.settings.scholar):
             finished_at = _timestamp_now()
             service_status = self._failure_service_status()
+            _LOGGER.warning(
+                "refresh aborted: trigger=%s reason=missing_AUTHOR_or_SCHOLAR",
+                trigger_reason,
+            )
             self._write_terminal_status(
                 service_status=service_status,
                 previous_status=previous_status,
@@ -269,6 +308,14 @@ class ServiceRuntime:
                 python_executable=self.worker_python_executable,
                 script_path=self.worker_script_path,
             )
+            _LOGGER.info(
+                "worker starting: trigger=%s staged_run_dir=%s author_configured=%s scholar_configured=%s wos_enabled=%s",
+                trigger_reason,
+                staged_run_dir,
+                bool(self.settings.author),
+                bool(self.settings.scholar),
+                self.settings.wos_enabled,
+            )
             completed = run_worker_subprocess(
                 argv,
                 working_directory=staged_run_dir,
@@ -278,6 +325,13 @@ class ServiceRuntime:
                     worker_stop_event,
                 ),
                 stop_event=worker_stop_event,
+            )
+            _LOGGER.info(
+                "worker finished: trigger=%s returncode=%s stdout_bytes=%s stderr_bytes=%s",
+                trigger_reason,
+                completed.returncode,
+                len(completed.stdout.encode("utf-8")),
+                len(completed.stderr.encode("utf-8")),
             )
 
             if self._shutdown_requested.is_set():
@@ -295,6 +349,12 @@ class ServiceRuntime:
 
             citation_payload = self._load_staged_citation_payload(staged_run_dir)
             promote_release(self.settings.state_dir, staged_run_dir)
+            _LOGGER.info(
+                "promotion completed: trigger=%s staged_run_dir=%s current_release=%s",
+                trigger_reason,
+                staged_run_dir,
+                current_release_path(self.settings.state_dir),
+            )
             self._write_terminal_status(
                 service_status="ready",
                 previous_status=previous_status,
@@ -302,6 +362,10 @@ class ServiceRuntime:
                 finished_at=_timestamp_now(),
                 citation_payload=citation_payload,
                 fallback_error="Refresh succeeded without source metadata",
+            )
+            _LOGGER.info(
+                "refresh succeeded: trigger=%s service_status=ready",
+                trigger_reason,
             )
         except Exception as error:
             citation_payload = self._load_staged_citation_payload(staged_run_dir)
@@ -318,9 +382,20 @@ class ServiceRuntime:
                 citation_payload=citation_payload,
                 fallback_error=_worker_failure_message(error, completed),
             )
+            _LOGGER.warning(
+                "refresh failed: trigger=%s service_status=%s error=%s",
+                trigger_reason,
+                service_status,
+                _worker_failure_message(error, completed),
+            )
         finally:
             self._clear_active_worker()
             shutil.rmtree(staged_run_dir, ignore_errors=True)
+            _LOGGER.info(
+                "refresh finished: trigger=%s cleaned_staged_run_dir=%s",
+                trigger_reason,
+                staged_run_dir,
+            )
 
     def shutdown_worker(self) -> None:
         self._shutdown_requested.set()
@@ -331,6 +406,11 @@ class ServiceRuntime:
         with self._active_worker_lock:
             stop_event = self._active_worker_stop_event
             process = self._active_worker_process
+
+        _LOGGER.info(
+            "worker shutdown requested: active_worker=%s",
+            process is not None and process.poll() is None,
+        )
 
         if stop_event is not None:
             stop_event.set()
@@ -508,6 +588,7 @@ class CitationServiceHTTPServer(ThreadingHTTPServer):
         worker_script_path: str | None = None,
     ) -> None:
         self.settings = settings
+        self._background_services_stopped = False
         self.state_layout = _storage_module().ensure_state_layout(
             settings.state_dir,
             settings=settings,
@@ -530,15 +611,32 @@ class CitationServiceHTTPServer(ThreadingHTTPServer):
         )
 
     def start_background_services(self) -> None:
+        _LOGGER.info(
+            "service starting background services: host=%s port=%s state_dir=%s cron=%s timezone=%s refresh_on_startup=%s wos_enabled=%s",
+            self.settings.app_host,
+            self.settings.app_port,
+            self.settings.state_dir,
+            self.settings.cron_schedule,
+            self.settings.timezone,
+            self.settings.refresh_on_startup,
+            self.settings.wos_enabled,
+        )
         self.runtime.synchronize_status()
         self.scheduler.start()
+        _LOGGER.info("service background services started")
 
     def stop_background_services(self) -> None:
+        if self._background_services_stopped:
+            return
+        self._background_services_stopped = True
+        _LOGGER.info("service stopping background services")
         self.scheduler.shutdown()
+        _LOGGER.info("service background services stopped")
 
     def server_close(self) -> None:
         self.stop_background_services()
         super().server_close()
+        _LOGGER.info("service server closed")
 
 
 class CitationServiceRequestHandler(BaseHTTPRequestHandler):
@@ -691,6 +789,7 @@ def create_server(
 
 
 def _request_shutdown(server: CitationServiceHTTPServer) -> None:
+    _LOGGER.info("service shutdown requested")
     server.stop_background_services()
     server.shutdown()
 
@@ -706,6 +805,7 @@ def _install_signal_handlers(
         if shutdown_requested.is_set():
             return
         shutdown_requested.set()
+        _LOGGER.info("signal received: signum=%s", signum)
         threading.Thread(
             target=_request_shutdown,
             args=(server,),
@@ -727,16 +827,25 @@ def _restore_signal_handlers(previous_handlers: dict[signal.Signals, Any]) -> No
 def main() -> None:
     """Start the self-hosted HTTP service."""
 
+    _configure_runtime_logging()
     server = create_server()
+    _LOGGER.info("service process initialized")
     previous_handlers = _install_signal_handlers(server)
     server.start_background_services()
     try:
+        _LOGGER.info(
+            "service listening: http://%s:%s",
+            server.settings.app_host,
+            server.settings.app_port,
+        )
         server.serve_forever()
     except KeyboardInterrupt:
+        _LOGGER.info("keyboard interrupt received")
         pass
     finally:
         _restore_signal_handlers(previous_handlers)
         server.server_close()
+        _LOGGER.info("service stopped")
 
 
 if __name__ == "__main__":
