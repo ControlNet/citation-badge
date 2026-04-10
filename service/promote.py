@@ -3,15 +3,18 @@
 from __future__ import annotations
 
 import json
+import logging
 import os
 import shutil
 import tempfile
 import uuid
+from typing import Any
 
 from .storage import CURRENT_RELEASE_POINTER, get_state_layout
 
 DIST_DIRNAME = "dist"
 REQUIRED_DIST_FILENAMES = ("citation.json", "all.svg")
+_LOGGER = logging.getLogger("citation_badge.service")
 
 
 def staged_dist_path(staged_run_dir: str) -> str:
@@ -71,6 +74,7 @@ def _copy_release(staged_run_dir: str, release_dir: str) -> str:
 
 def _atomic_switch_current(current_pointer: str, release_dir: str) -> None:
     state_dir = os.path.dirname(current_pointer)
+    relative_release_target = os.path.relpath(release_dir, start=state_dir)
     temp_pointer = os.path.join(
         state_dir,
         f".{CURRENT_RELEASE_POINTER}.{uuid.uuid4().hex}.tmp",
@@ -82,7 +86,7 @@ def _atomic_switch_current(current_pointer: str, release_dir: str) -> None:
         )
 
     try:
-        os.symlink(release_dir, temp_pointer)
+        os.symlink(relative_release_target, temp_pointer)
         os.replace(temp_pointer, current_pointer)
     except Exception:
         if os.path.lexists(temp_pointer):
@@ -90,10 +94,44 @@ def _atomic_switch_current(current_pointer: str, release_dir: str) -> None:
         raise
 
 
+def _is_managed_release(releases_dir: str, release_dir: str) -> bool:
+    try:
+        return os.path.commonpath([releases_dir, release_dir]) == releases_dir
+    except ValueError:
+        return False
+
+
+def _delete_previous_release(
+    layout: Any, previous_release_dir: str | None, release_dir: str
+) -> None:
+    if previous_release_dir is None:
+        return
+    if previous_release_dir == release_dir:
+        return
+    if not _is_managed_release(layout.releases_dir, previous_release_dir):
+        _LOGGER.warning(
+            "skipping deletion of unmanaged previous release: %s",
+            previous_release_dir,
+        )
+        return
+    if not os.path.exists(previous_release_dir):
+        return
+
+    try:
+        shutil.rmtree(previous_release_dir)
+    except OSError as error:
+        _LOGGER.warning(
+            "failed to delete previous release: previous_release=%s error=%s",
+            previous_release_dir,
+            error,
+        )
+
+
 def promote_release(state_dir: str, staged_run_dir: str) -> str:
     """Promote a validated staged run into the public current release pointer."""
 
     layout = get_state_layout(state_dir)
+    previous_release_dir = current_release_path(state_dir)
     os.makedirs(layout.state_dir, exist_ok=True)
     os.makedirs(layout.releases_dir, exist_ok=True)
 
@@ -109,6 +147,7 @@ def promote_release(state_dir: str, staged_run_dir: str) -> str:
 
     _copy_release(staged_run_dir, release_dir)
     _atomic_switch_current(layout.current_pointer, release_dir)
+    _delete_previous_release(layout, previous_release_dir, release_dir)
     return release_dir
 
 
