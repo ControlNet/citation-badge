@@ -35,6 +35,37 @@ Reviews badge: <img src="https://cite.controlnet.space/review.svg">
    - `DEPLOY_TOKEN`: Used to trigger the deployment workflow if you have another repository that need to re-deploy to access the citation data. You can use personal access token of your account or the deploy token in the repository (optional)
 3. **Enable GitHub Pages** to use the `dist` branch
 
+## Self-hosted Docker runtime
+
+This is additive to the existing GitHub Actions/GitHub Pages flow, not a replacement.
+
+Run the service:
+
+```bash
+docker run --rm -d --name citation-badge \
+  -p 8000:8000 \
+  -v "$PWD/data:/data" \
+  -e AUTHOR='Yann LeCun' \
+  controlnet/citation-badge
+```
+
+Or if you prefer to build by yourself:
+
+```bash
+docker build -t controlnet/citation-badge .
+```
+
+Required env vars:
+
+- `AUTHOR` or `SCHOLAR` (set at least one)
+- `WOS` is optional and remains disabled by default in Docker unless `ENABLE_WOS=1`
+
+Mounted state volume:
+
+- `-v "$PWD/data:/data"` keeps the service’s runtime state and latest promoted release outside the container.
+
+Then you can access the served files as same as the GitHub, such as `localhost:8000/all.svg`, `localhost:8000/citation.json`, etc.
+
 ## Usage
 
 Badges update automatically hourly. Embed them in your sites:
