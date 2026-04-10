@@ -1,0 +1,17 @@
+.git
+.github
+.pixi
+.ruff_cache
+.sisyphus
+__pycache__
+*.py[cod]
+*.egg-info
+
+data
+
+AGENTS.md
+LICENSE
+README.md
+pixi.lock
+pixi.toml
+pyrightconfig.json

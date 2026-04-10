@@ -3,6 +3,7 @@ FROM python:3.10-slim
 ENV HOME=/home/app \
     PUID=1000 \
     PGID=1000 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1 \
     PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1
 
@@ -15,9 +16,10 @@ RUN apt-get update \
 WORKDIR /app
 
 COPY requirements.txt ./
-RUN python -m pip install --no-cache-dir -r requirements.txt
+RUN python -m pip install --no-cache-dir --no-compile -r requirements.txt
 
-COPY . ./
+COPY main.py ./
+COPY service ./service
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 
 RUN mkdir -p /data \
