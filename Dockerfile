@@ -16,7 +16,26 @@ RUN apt-get update \
 WORKDIR /app
 
 COPY requirements.txt ./
-RUN python -m pip install --no-cache-dir --no-compile -r requirements.txt
+RUN python -m pip install --no-cache-dir --no-compile -r requirements.txt \
+    && python -m pip uninstall -y \
+        alabaster \
+        babel \
+        docutils \
+        imagesize \
+        Jinja2 \
+        packaging \
+        Pygments \
+        snowballstemmer \
+        sphinx \
+        sphinx-rtd-theme \
+        sphinxcontrib-applehelp \
+        sphinxcontrib-devhelp \
+        sphinxcontrib-htmlhelp \
+        sphinxcontrib-jquery \
+        sphinxcontrib-jsmath \
+        sphinxcontrib-qthelp \
+        sphinxcontrib-serializinghtml \
+        tomli
 
 COPY main.py ./
 COPY service ./service
