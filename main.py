@@ -11,6 +11,23 @@ import undetected_chromedriver as uc
 from scholarly import scholarly
 from scholarly._proxy_generator import MaxTriesExceededException
 
+
+def _get_env_str(name: str) -> str | None:
+    value = os.getenv(name)
+    if value is None:
+        return None
+    value = value.strip()
+    return value or None
+
+
+def _write_wos_badge(review_count: str) -> None:
+    with open(os.path.join("dist", "review.svg"), "wb") as f:
+        f.write(
+            requests.get(
+                f"https://img.shields.io/badge/peer reviews-{review_count}-_.svg?color=8A2BE2&style=flat-square"
+            ).content
+        )
+
 # --- Summary Status Initialization ---
 gs_status = {"success": False, "reason": "Not attempted"}
 wos_status = {"success": False, "reason": "Not attempted"}
@@ -42,6 +59,7 @@ parser.add_argument(
 )
 
 args = parser.parse_args()
+wos_overwrite_raw = _get_env_str("WOS_OVERWRITE")
 
 print("Searching author...", flush=True)
 if not os.path.exists("dist"):
@@ -138,7 +156,27 @@ except Exception as e:
     citation_metadata["google_scholar"]["error"] = str(e)
     gs_status = {"success": False, "reason": f"Unexpected error: {e}"}
 
-if args.wos:
+if wos_overwrite_raw is not None:
+    print(f"Using WOS overwrite: {wos_overwrite_raw}", flush=True)
+    try:
+        review_count = int(wos_overwrite_raw)
+        if review_count < 0:
+            raise ValueError("WOS_OVERWRITE must be a non-negative integer")
+
+        _write_wos_badge(str(review_count))
+        print("Review badge generated", flush=True)
+        citation_metadata["web_of_science"]["status"] = "success"
+        citation_metadata["web_of_science"]["peer_reviews"] = review_count
+        wos_status = {
+            "success": True,
+            "reason": f"Peer reviews: {review_count} (override)",
+        }
+    except Exception as e:
+        print(f"An error occurred during WOS overwrite processing: {e}", flush=True)
+        citation_metadata["web_of_science"]["status"] = "failed"
+        citation_metadata["web_of_science"]["error"] = str(e)
+        wos_status = {"success": False, "reason": f"WOS Override Error: {e}"}
+elif args.wos:
     print("Searching wos...", flush=True)
     citation_metadata["web_of_science"]["status"] = "processing"
     wos_status["reason"] = "Processing"  # Initial status for WOS attempt
@@ -181,12 +219,7 @@ if args.wos:
             }
         else:
             # generate badge
-            with open(os.path.join("dist", "review.svg"), "wb") as f:
-                f.write(
-                    requests.get(
-                        f"https://img.shields.io/badge/peer reviews-{review_count}-_.svg?color=8A2BE2&style=flat-square"
-                    ).content
-                )
+            _write_wos_badge(review_count)
             print("Review badge generated", flush=True)
             citation_metadata["web_of_science"]["status"] = "success"
             citation_metadata["web_of_science"]["peer_reviews"] = (
@@ -314,7 +347,7 @@ if args.gen_summary:
         f"| Google Scholar  | {gs_icon:<8}| {gs_status['reason']:<32} |\n"
     )
 
-    if args.wos:
+    if args.wos or wos_overwrite_raw is not None:
         wos_icon = "✅ Success" if wos_status["success"] else "❌ Failed"
         summary_content += (
             f"| Web of Science  | {wos_icon:<8}| {wos_status['reason']:<32} |\n"
