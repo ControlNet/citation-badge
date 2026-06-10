@@ -28,8 +28,7 @@ Reviews badge: <img src="https://cite.controlnet.space/review.svg">
 
 1. **Fork this repository**
 2. **Set up GitHub Secrets** (Repository Settings → Secrets → Actions):
-   - `AUTHOR`: Your name as it appears on Google Scholar (at least one of `SCHOLAR` or `AUTHOR` is required)
-   - `SCHOLAR`: Your Google Scholar ID (at least one of `SCHOLAR` or `AUTHOR` is required)
+   - `SCHOLAR`: Your Google Scholar ID
    - `WOS_OVERWRITE`: Your Web of Science peer review count (optional)
    - `CNAME`: Custom domain for GitHub Pages (optional)
    - `DEPLOY_TOKEN`: Used with `DEPLOY_TARGET` to trigger another repository's deployment workflow after citation data updates (optional)
@@ -48,7 +47,7 @@ docker run --rm -d --name citation-badge \
   -v "$PWD/data:/data" \
   -e PUID="$(id -u)" \
   -e PGID="$(id -g)" \
-  -e AUTHOR='Yann LeCun' \
+  -e SCHOLAR='WLN3QrAAAAAJ' \
   controlnet/citation-badge
 ```
 
@@ -60,7 +59,7 @@ docker build -t controlnet/citation-badge .
 
 Required env vars:
 
-- `AUTHOR` or `SCHOLAR` (set at least one)
+- `SCHOLAR`: Your Google Scholar ID
 - `WOS_OVERWRITE` is optional and generates the Web of Science peer review badge when set to a non-negative integer
 
 Optional runtime user mapping:
