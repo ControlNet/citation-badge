@@ -303,8 +303,6 @@ class ServiceRuntime:
             argv = build_worker_argv(
                 author=self.settings.author,
                 scholar=self.settings.scholar,
-                wos=self.settings.wos,
-                enable_wos=self.settings.enable_wos,
                 python_executable=self.worker_python_executable,
                 script_path=self.worker_script_path,
             )

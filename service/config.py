@@ -12,7 +12,6 @@ DEFAULT_CRON_SCHEDULE = "0 * * * *"
 DEFAULT_TIMEZONE = "UTC"
 DEFAULT_REFRESH_ON_STARTUP = True
 DEFAULT_WORKER_TIMEOUT_SECONDS = 180
-DEFAULT_ENABLE_WOS = False
 
 
 def _get_env_str(name: str, default: str) -> str:
@@ -70,7 +69,7 @@ class Settings:
         self.state_dir = _get_env_str("STATE_DIR", DEFAULT_STATE_DIR)
         self.author = _get_env_optional_str("AUTHOR")
         self.scholar = _get_env_optional_str("SCHOLAR")
-        self.wos = _get_env_optional_str("WOS")
+        self.wos_overwrite = _get_env_optional_str("WOS_OVERWRITE")
         self.cron_schedule = _get_env_str("CRON_SCHEDULE", DEFAULT_CRON_SCHEDULE)
         self.timezone = _get_env_str("TIMEZONE", DEFAULT_TIMEZONE)
         self.refresh_on_startup = _get_env_bool(
@@ -81,11 +80,10 @@ class Settings:
             "WORKER_TIMEOUT_SECONDS",
             DEFAULT_WORKER_TIMEOUT_SECONDS,
         )
-        self.enable_wos = _get_env_bool("ENABLE_WOS", DEFAULT_ENABLE_WOS)
 
     @property
     def wos_enabled(self) -> bool:
-        return bool(self.enable_wos and self.wos)
+        return bool(self.wos_overwrite)
 
     def model_dump(self) -> dict[str, Any]:
         return {
@@ -96,5 +94,5 @@ class Settings:
             "timezone": self.timezone,
             "refresh_on_startup": self.refresh_on_startup,
             "worker_timeout_seconds": self.worker_timeout_seconds,
-            "enable_wos": self.enable_wos,
+            "wos_overwrite_configured": bool(self.wos_overwrite),
         }

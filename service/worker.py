@@ -54,18 +54,10 @@ def _timestamp_now() -> str:
     return datetime.now(timezone.utc).isoformat()
 
 
-def should_enable_wos(enable_wos: bool, wos: str | None) -> bool:
-    """Return True only when service mode allows WOS and an ID is present."""
-
-    return bool(enable_wos and _normalize_cli_value(wos))
-
-
 def build_worker_argv(
     *,
     author: str | None,
     scholar: str | None,
-    wos: str | None,
-    enable_wos: bool,
     python_executable: str = PYTHON_EXECUTABLE,
     script_path: str = MAIN_SCRIPT_PATH,
 ) -> list[str]:
@@ -77,8 +69,6 @@ def build_worker_argv(
         argv.extend(["--author", str(author)])
     if _has_cli_value(scholar):
         argv.extend(["--scholar", str(scholar)])
-    if should_enable_wos(enable_wos, wos):
-        argv.extend(["--wos", str(wos)])
 
     return argv
 
@@ -296,7 +286,6 @@ __all__ = [
     "google_scholar_failure_result",
     "record_failure_result",
     "run_worker_subprocess",
-    "should_enable_wos",
     "WorkerShutdownError",
     "web_of_science_failure_result",
 ]

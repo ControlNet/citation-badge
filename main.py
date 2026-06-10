@@ -1,13 +1,10 @@
 import argparse
 import os
-import time
 import json
 import traceback
 from datetime import datetime
 
 import requests
-from selenium.webdriver.common.by import By
-import undetected_chromedriver as uc
 from scholarly import scholarly
 from scholarly._proxy_generator import MaxTriesExceededException
 
@@ -53,7 +50,6 @@ citation_metadata = {
 parser = argparse.ArgumentParser(description="Get citations from Google Scholar")
 parser.add_argument("--author", type=str, help="Author name")
 parser.add_argument("--scholar", type=str, help="Google Scholar ID")
-parser.add_argument("--wos", type=str, help="Web of Science ID (optional)")
 parser.add_argument(
     "--gen_summary", action="store_true", help="Generate summary for github actions"
 )
@@ -176,68 +172,9 @@ if wos_overwrite_raw is not None:
         citation_metadata["web_of_science"]["status"] = "failed"
         citation_metadata["web_of_science"]["error"] = str(e)
         wos_status = {"success": False, "reason": f"WOS Override Error: {e}"}
-elif args.wos:
-    print("Searching wos...", flush=True)
-    citation_metadata["web_of_science"]["status"] = "processing"
-    wos_status["reason"] = "Processing"  # Initial status for WOS attempt
-    driver = None  # Initialize driver to None
-    try:
-        # use selenium headless
-        driver = uc.Chrome(headless=True, use_subprocess=True)
-        driver.get(f"https://www.webofscience.com/wos/author/record/{args.wos}")
-        # wait for the page to load
-        review_count = None
-        for i in range(10):
-            try:
-                elements = driver.find_elements(By.CLASS_NAME, "summary-label")
-                elements = [e for e in elements if "Verified peer reviews" in e.text]
-                if len(elements) > 0:
-                    element = elements[0]
-                    parent_element = element.find_element(By.XPATH, "..")
-                    count_element = parent_element.find_element(
-                        By.CLASS_NAME, "summary-count"
-                    )
-                    review_count = count_element.text
-                    break
-            except Exception as find_exc:
-                print(
-                    f"Attempt {i + 1}: Element not found yet - {find_exc}", flush=True
-                )
-
-            time.sleep(1)
-            print(f"waiting for page to load ({i + 1}/10)", flush=True)
-
-        if review_count is None:
-            print("timeout or element not found after retries", flush=True)
-            citation_metadata["web_of_science"]["status"] = "failed"
-            citation_metadata["web_of_science"]["error"] = (
-                "Timeout or 'Verified peer reviews' element not found"
-            )
-            wos_status = {
-                "success": False,
-                "reason": "Timeout or 'Verified peer reviews' element not found",
-            }
-        else:
-            # generate badge
-            _write_wos_badge(review_count)
-            print("Review badge generated", flush=True)
-            citation_metadata["web_of_science"]["status"] = "success"
-            citation_metadata["web_of_science"]["peer_reviews"] = (
-                int(review_count) if review_count.isdigit() else review_count
-            )
-            wos_status = {"success": True, "reason": f"Peer reviews: {review_count}"}
-
-    except Exception as e:
-        print(f"An error occurred during WOS processing: {e}", flush=True)
-        citation_metadata["web_of_science"]["status"] = "failed"
-        citation_metadata["web_of_science"]["error"] = str(e)
-        wos_status = {"success": False, "reason": f"WOS Error: {e}"}
-    finally:
-        if driver:
-            driver.quit()
 else:
     citation_metadata["web_of_science"]["status"] = "skipped"
-    wos_status["reason"] = "WOS ID not provided"
+    wos_status["reason"] = "WOS_OVERWRITE not provided"
 
 # --- Save Citation Metadata JSON ---
 try:
@@ -347,7 +284,7 @@ if args.gen_summary:
         f"| Google Scholar  | {gs_icon:<8}| {gs_status['reason']:<32} |\n"
     )
 
-    if args.wos or wos_overwrite_raw is not None:
+    if wos_overwrite_raw is not None:
         wos_icon = "✅ Success" if wos_status["success"] else "❌ Failed"
         summary_content += (
             f"| Web of Science  | {wos_icon:<8}| {wos_status['reason']:<32} |\n"
