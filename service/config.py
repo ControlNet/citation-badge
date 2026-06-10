@@ -67,7 +67,6 @@ class Settings:
         self.app_host = _get_env_str("APP_HOST", DEFAULT_APP_HOST)
         self.app_port = _get_env_int("APP_PORT", DEFAULT_APP_PORT)
         self.state_dir = _get_env_str("STATE_DIR", DEFAULT_STATE_DIR)
-        self.author = _get_env_optional_str("AUTHOR")
         self.scholar = _get_env_optional_str("SCHOLAR")
         self.wos_overwrite = _get_env_optional_str("WOS_OVERWRITE")
         self.cron_schedule = _get_env_str("CRON_SCHEDULE", DEFAULT_CRON_SCHEDULE)

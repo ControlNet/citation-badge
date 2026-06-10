@@ -56,7 +56,6 @@ def _timestamp_now() -> str:
 
 def build_worker_argv(
     *,
-    author: str | None,
     scholar: str | None,
     python_executable: str = PYTHON_EXECUTABLE,
     script_path: str = MAIN_SCRIPT_PATH,
@@ -65,8 +64,6 @@ def build_worker_argv(
 
     argv = [python_executable, script_path]
 
-    if _has_cli_value(author):
-        argv.extend(["--author", str(author)])
     if _has_cli_value(scholar):
         argv.extend(["--scholar", str(scholar)])
 

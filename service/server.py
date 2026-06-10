@@ -275,11 +275,11 @@ class ServiceRuntime:
             self.settings.state_dir,
         )
 
-        if not (self.settings.author or self.settings.scholar):
+        if not self.settings.scholar:
             finished_at = _timestamp_now()
             service_status = self._failure_service_status()
             _LOGGER.warning(
-                "refresh aborted: trigger=%s reason=missing_AUTHOR_or_SCHOLAR",
+                "refresh aborted: trigger=%s reason=missing_SCHOLAR",
                 trigger_reason,
             )
             self._write_terminal_status(
@@ -288,7 +288,7 @@ class ServiceRuntime:
                 attempted_at=attempted_at,
                 finished_at=finished_at,
                 citation_payload=None,
-                fallback_error="AUTHOR or SCHOLAR must be configured",
+                fallback_error="SCHOLAR must be configured",
             )
             return
 
@@ -301,16 +301,14 @@ class ServiceRuntime:
         try:
             worker_stop_event = threading.Event()
             argv = build_worker_argv(
-                author=self.settings.author,
                 scholar=self.settings.scholar,
                 python_executable=self.worker_python_executable,
                 script_path=self.worker_script_path,
             )
             _LOGGER.info(
-                "worker starting: trigger=%s staged_run_dir=%s author_configured=%s scholar_configured=%s wos_enabled=%s",
+                "worker starting: trigger=%s staged_run_dir=%s scholar_configured=%s wos_enabled=%s",
                 trigger_reason,
                 staged_run_dir,
-                bool(self.settings.author),
                 bool(self.settings.scholar),
                 self.settings.wos_enabled,
             )
