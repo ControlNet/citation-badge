@@ -2,6 +2,7 @@ import argparse
 import hashlib
 import json
 import os
+import signal
 import shutil
 import traceback
 from datetime import datetime
@@ -14,6 +15,11 @@ from scholarly._proxy_generator import MaxTriesExceededException
 
 DIST_DIR = Path("dist")
 STAGING_DIR = DIST_DIR / ".staging"
+DEFAULT_PROFILE_TIMEOUT_SECONDS = 165
+
+
+class ScholarProfileTimeout(TimeoutError):
+    pass
 
 
 def _get_env_str(name: str) -> str | None:
@@ -22,6 +28,17 @@ def _get_env_str(name: str) -> str | None:
         return None
     value = value.strip()
     return value or None
+
+
+def _get_env_int(name: str, default: int) -> int:
+    value = _get_env_str(name)
+    if value is None:
+        return default
+    try:
+        parsed = int(value)
+    except ValueError:
+        return default
+    return parsed if parsed > 0 else default
 
 
 def parse_scholar_ids(raw: str) -> list[str]:
@@ -105,7 +122,26 @@ def _dist_snapshot() -> dict[str, str]:
     return snapshot
 
 
-def generate_scholar_to_dir(scholar_id: str, output_dir: Path) -> dict:
+def _fill_author_with_timeout(author_seed: dict, timeout_seconds: int) -> dict:
+    previous_handler = signal.getsignal(signal.SIGALRM)
+
+    def raise_timeout(signum, frame):
+        raise ScholarProfileTimeout(
+            f"Google Scholar profile timed out after {timeout_seconds} seconds"
+        )
+
+    signal.signal(signal.SIGALRM, raise_timeout)
+    signal.setitimer(signal.ITIMER_REAL, timeout_seconds)
+    try:
+        return scholarly.fill(author_seed)
+    finally:
+        signal.setitimer(signal.ITIMER_REAL, 0)
+        signal.signal(signal.SIGALRM, previous_handler)
+
+
+def generate_scholar_to_dir(
+    scholar_id: str, output_dir: Path, profile_timeout_seconds: int
+) -> dict:
     citation_metadata = _new_citation_metadata()
 
     try:
@@ -123,7 +159,7 @@ def generate_scholar_to_dir(scholar_id: str, output_dir: Path) -> dict:
         }
         print(f"Loading Google Scholar profile {scholar_id}...", flush=True)
         print("Google Scholar profile found", flush=True)
-        author = scholarly.fill(author_seed)
+        author = _fill_author_with_timeout(author_seed, profile_timeout_seconds)
         print("Google Scholar profile filled", flush=True)
         total_cite = author["citedby"]
 
@@ -177,6 +213,15 @@ def generate_scholar_to_dir(scholar_id: str, output_dir: Path) -> dict:
             "success": False,
             "metadata": citation_metadata,
             "reason": "Max proxy retries exceeded",
+        }
+    except ScholarProfileTimeout as e:
+        print(f"{e}, skip google scholar badges for {scholar_id}", flush=True)
+        citation_metadata["google_scholar"]["status"] = "failed"
+        citation_metadata["google_scholar"]["error"] = str(e)
+        return {
+            "success": False,
+            "metadata": citation_metadata,
+            "reason": str(e),
         }
     except Exception as e:
         print(
@@ -311,6 +356,9 @@ def main() -> None:
     STAGING_DIR.mkdir(parents=True, exist_ok=True)
 
     wos_overwrite_raw = _get_env_str("WOS_OVERWRITE")
+    profile_timeout_seconds = _get_env_int(
+        "SCHOLAR_PROFILE_TIMEOUT_SECONDS", DEFAULT_PROFILE_TIMEOUT_SECONDS
+    )
     profile_results = {}
     profile_statuses = []
     previous_profile_data = {}
@@ -325,7 +373,9 @@ def main() -> None:
             previous_profile_review[scholar_id] = review_path.read_bytes()
         elif scholar_id == scholar_ids[0] and (DIST_DIR / "review.svg").exists():
             previous_profile_review[scholar_id] = (DIST_DIR / "review.svg").read_bytes()
-        result = generate_scholar_to_dir(scholar_id, staged_profile_dir)
+        result = generate_scholar_to_dir(
+            scholar_id, staged_profile_dir, profile_timeout_seconds
+        )
         profile_results[scholar_id] = result
 
         if result["success"]:

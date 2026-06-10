@@ -6,6 +6,7 @@ import runpy
 import shutil
 import sys
 import tempfile
+import time
 import types
 import unittest
 from pathlib import Path
@@ -16,7 +17,9 @@ MAIN_PATH = REPO_ROOT / "main.py"
 
 
 class MultiProfileCliTest(unittest.TestCase):
-    def run_main(self, scholar_arg, authors, *, wos_overwrite=None, workdir=None):
+    def run_main(
+        self, scholar_arg, authors, *, wos_overwrite=None, workdir=None, extra_env=None
+    ):
         temp_dir = workdir or tempfile.mkdtemp(prefix="citation-badge-test-")
         old_cwd = os.getcwd()
         old_argv = sys.argv[:]
@@ -35,6 +38,8 @@ class MultiProfileCliTest(unittest.TestCase):
                 result = authors[scholar_id]
                 if isinstance(result, Exception):
                     raise result
+                if callable(result):
+                    return result()
                 return result
 
         class FakeResponse:
@@ -56,6 +61,8 @@ class MultiProfileCliTest(unittest.TestCase):
         os.environ.clear()
         if wos_overwrite is not None:
             os.environ["WOS_OVERWRITE"] = str(wos_overwrite)
+        if extra_env is not None:
+            os.environ.update(extra_env)
 
         stdout = io.StringIO()
         try:
@@ -224,6 +231,26 @@ class MultiProfileCliTest(unittest.TestCase):
             (dist / "review.svg").exists(), (dist / "id1" / "review.svg").exists()
         )
         self.assertTrue((dist / "id1" / "review.svg").exists())
+
+    def test_later_profile_timeout_preserves_first_profile_update(self):
+        def slow_id2():
+            time.sleep(2)
+            return self.author("id2", 20)
+
+        self.temp_dir, _ = self.run_main(
+            "id1,id2",
+            {"id1": self.author("id1", 12), "id2": slow_id2},
+            extra_env={"SCHOLAR_PROFILE_TIMEOUT_SECONDS": "1"},
+        )
+
+        dist = self.temp_dir / "dist"
+        root_data = json.loads((dist / "citation.json").read_text(encoding="utf-8"))
+        id1_data = json.loads((dist / "id1" / "citation.json").read_text(encoding="utf-8"))
+        self.assertEqual(root_data, id1_data)
+        self.assertEqual(root_data["google_scholar"]["total_citations"], 12)
+        self.assertTrue((dist / "id1" / "all.svg").exists())
+        self.assertFalse((dist / "id2" / "citation.json").exists())
+        self.assertEqual((self.temp_dir / "citation_updated.flag").read_text(), "true")
 
 
 if __name__ == "__main__":
