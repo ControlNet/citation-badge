@@ -79,16 +79,20 @@ jobs:
         run: cat summary.md >> $GITHUB_STEP_SUMMARY
 
       - name: Configure Git
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           rm -rf .git
           rm -rf dist/.git
           cd dist
-          
-          # Create CNAME file if the secret is provided
-          if [ ! -z "${{ secrets.CNAME }}" ]; then
-            echo "${{ secrets.CNAME }}" > CNAME
+
+          pages_cname="$(gh api -X GET "repos/${GITHUB_REPOSITORY}/pages" --jq '.cname // ""' 2>/dev/null || true)"
+          if [ -n "${pages_cname}" ]; then
+            printf '%s\n' "${pages_cname}" > CNAME
+          else
+            rm -f CNAME
           fi
-          
+
           git init
           git config --local user.name "github-actions[bot]"
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
