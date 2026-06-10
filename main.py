@@ -1,8 +1,8 @@
 import argparse
 import hashlib
 import json
+import multiprocessing
 import os
-import signal
 import shutil
 import traceback
 from datetime import datetime
@@ -122,21 +122,41 @@ def _dist_snapshot() -> dict[str, str]:
     return snapshot
 
 
-def _fill_author_with_timeout(author_seed: dict, timeout_seconds: int) -> dict:
-    previous_handler = signal.getsignal(signal.SIGALRM)
+def _fill_author_worker(author_seed: dict, result_queue) -> None:
+    try:
+        result_queue.put(("success", scholarly.fill(author_seed)))
+    except Exception as e:
+        result_queue.put(("error", e.__class__.__name__, str(e), traceback.format_exc()))
 
-    def raise_timeout(signum, frame):
+
+def _fill_author_with_timeout(author_seed: dict, timeout_seconds: int) -> dict:
+    context = multiprocessing.get_context("fork")
+    result_queue = context.Queue(maxsize=1)
+    process = context.Process(target=_fill_author_worker, args=(author_seed, result_queue))
+    process.start()
+    process.join(timeout_seconds)
+
+    if process.is_alive():
+        process.terminate()
+        process.join(5)
+        if process.is_alive():
+            process.kill()
+            process.join()
         raise ScholarProfileTimeout(
             f"Google Scholar profile timed out after {timeout_seconds} seconds"
         )
 
-    signal.signal(signal.SIGALRM, raise_timeout)
-    signal.setitimer(signal.ITIMER_REAL, timeout_seconds)
-    try:
-        return scholarly.fill(author_seed)
-    finally:
-        signal.setitimer(signal.ITIMER_REAL, 0)
-        signal.signal(signal.SIGALRM, previous_handler)
+    if result_queue.empty():
+        raise RuntimeError("Google Scholar profile worker exited without a result")
+
+    result = result_queue.get()
+    if result[0] == "success":
+        return result[1]
+
+    _, error_name, error_message, remote_traceback = result
+    if error_name == MaxTriesExceededException.__name__:
+        raise MaxTriesExceededException(error_message)
+    raise RuntimeError(f"{error_message}\n{remote_traceback}")
 
 
 def generate_scholar_to_dir(
