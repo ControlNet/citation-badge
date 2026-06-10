@@ -8,3 +8,4 @@
 - When the first profile succeeds, root output is refreshed from that first profile, including `all.svg`, paper SVGs, `review.svg`, and `citation.json`.
 - Root `dist/citation.json` must match `dist/<FIRST_SCHOLAR_ID>/citation.json`; later profile JSON files keep Web of Science as `skipped` unless they become the first profile in `SCHOLAR` order.
 - `citation_updated.flag=true` means the publishable contents of `dist/` changed after staging was excluded. Success attempts that rewrite identical bytes keep the flag `false`, so CI does not enter the `dist` commit/push path with nothing to commit.
+- Per-profile Google Scholar refresh timeout is supplied only by the CLI `--timeout` argument. GitHub Actions passes `--timeout 180` for the fixed 3-minute profile timeout; there is no environment-variable timeout override.
