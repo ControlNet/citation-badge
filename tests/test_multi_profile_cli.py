@@ -18,7 +18,7 @@ MAIN_PATH = REPO_ROOT / "main.py"
 
 class MultiProfileCliTest(unittest.TestCase):
     def run_main(
-        self, scholar_arg, authors, *, wos_overwrite=None, workdir=None, extra_env=None
+        self, scholar_arg, authors, *, wos_overwrite=None, workdir=None, timeout=180
     ):
         temp_dir = workdir or tempfile.mkdtemp(prefix="citation-badge-test-")
         old_cwd = os.getcwd()
@@ -57,12 +57,17 @@ class MultiProfileCliTest(unittest.TestCase):
         sys.modules["scholarly._proxy_generator"] = fake_proxy_module
 
         os.chdir(temp_dir)
-        sys.argv = [str(MAIN_PATH), "--scholar", scholar_arg, "--gen_summary"]
+        sys.argv = [
+            str(MAIN_PATH),
+            "--scholar",
+            scholar_arg,
+            "--timeout",
+            str(timeout),
+            "--gen_summary",
+        ]
         os.environ.clear()
         if wos_overwrite is not None:
             os.environ["WOS_OVERWRITE"] = str(wos_overwrite)
-        if extra_env is not None:
-            os.environ.update(extra_env)
 
         stdout = io.StringIO()
         try:
@@ -240,7 +245,7 @@ class MultiProfileCliTest(unittest.TestCase):
         self.temp_dir, _ = self.run_main(
             "id1,id2",
             {"id1": self.author("id1", 12), "id2": slow_id2},
-            extra_env={"SCHOLAR_PROFILE_TIMEOUT_SECONDS": "1"},
+            timeout=1,
         )
 
         dist = self.temp_dir / "dist"

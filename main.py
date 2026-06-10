@@ -15,7 +15,6 @@ from scholarly._proxy_generator import MaxTriesExceededException
 
 DIST_DIR = Path("dist")
 STAGING_DIR = DIST_DIR / ".staging"
-DEFAULT_PROFILE_TIMEOUT_SECONDS = 165
 
 
 class ScholarProfileTimeout(TimeoutError):
@@ -28,17 +27,6 @@ def _get_env_str(name: str) -> str | None:
         return None
     value = value.strip()
     return value or None
-
-
-def _get_env_int(name: str, default: int) -> int:
-    value = _get_env_str(name)
-    if value is None:
-        return default
-    try:
-        parsed = int(value)
-    except ValueError:
-        return default
-    return parsed if parsed > 0 else default
 
 
 def parse_scholar_ids(raw: str) -> list[str]:
@@ -361,9 +349,17 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Get citations from Google Scholar")
     parser.add_argument("--scholar", type=str, required=True, help="Google Scholar ID")
     parser.add_argument(
+        "--timeout",
+        type=int,
+        required=True,
+        help="Per-profile Google Scholar timeout in seconds",
+    )
+    parser.add_argument(
         "--gen_summary", action="store_true", help="Generate summary for github actions"
     )
     args = parser.parse_args()
+    if args.timeout <= 0:
+        parser.error("--timeout must be a positive number of seconds")
 
     scholar_ids = parse_scholar_ids(args.scholar)
     if not scholar_ids:
@@ -376,9 +372,7 @@ def main() -> None:
     STAGING_DIR.mkdir(parents=True, exist_ok=True)
 
     wos_overwrite_raw = _get_env_str("WOS_OVERWRITE")
-    profile_timeout_seconds = _get_env_int(
-        "SCHOLAR_PROFILE_TIMEOUT_SECONDS", DEFAULT_PROFILE_TIMEOUT_SECONDS
-    )
+    profile_timeout_seconds = args.timeout
     profile_results = {}
     profile_statuses = []
     previous_profile_data = {}

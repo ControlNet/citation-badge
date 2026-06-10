@@ -55,7 +55,7 @@ jobs:
           WOS_OVERWRITE: ${{ secrets.WOS_OVERWRITE }}
         run: |
           : "${SCHOLAR:?SCHOLAR secret is required}"
-          python -u main.py --scholar="${SCHOLAR}" --gen_summary
+          python -u main.py --scholar="${SCHOLAR}" --timeout 180 --gen_summary
 
       - name: Check if citation data was updated
         id: check_update
