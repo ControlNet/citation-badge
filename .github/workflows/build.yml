@@ -79,6 +79,7 @@ jobs:
         run: cat summary.md >> $GITHUB_STEP_SUMMARY
 
       - name: Configure Git
+        if: ${{ steps.check_update.outputs.updated == 'true' }}
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -104,6 +105,7 @@ jobs:
           git remote add origin $REPO_URL
 
       - name: Push to dist branch
+        if: ${{ steps.check_update.outputs.updated == 'true' }}
         uses: ad-m/github-push-action@master
         with:
           branch: dist
