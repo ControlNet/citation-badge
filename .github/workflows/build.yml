@@ -87,8 +87,7 @@ jobs:
           rm -rf dist/.git
           cd dist
 
-          pages_cname="$(gh api -X GET "repos/${GITHUB_REPOSITORY}/pages" --jq '.cname // ""' 2>/dev/null || true)"
-          if [ -n "${pages_cname}" ]; then
+          if pages_cname="$(gh api -X GET "repos/${GITHUB_REPOSITORY}/pages" --jq '.cname // ""' 2>/dev/null)" && [ -n "${pages_cname}" ]; then
             printf '%s\n' "${pages_cname}" > CNAME
           else
             rm -f CNAME
