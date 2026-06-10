@@ -48,44 +48,37 @@ citation_metadata = {
 # -----------------------------------
 
 parser = argparse.ArgumentParser(description="Get citations from Google Scholar")
-parser.add_argument("--author", type=str, help="Author name")
-parser.add_argument("--scholar", type=str, help="Google Scholar ID")
+parser.add_argument("--scholar", type=str, required=True, help="Google Scholar ID")
 parser.add_argument(
     "--gen_summary", action="store_true", help="Generate summary for github actions"
 )
 
 args = parser.parse_args()
+scholar_id = args.scholar.strip()
+if not scholar_id:
+    parser.error("--scholar must be a non-empty Google Scholar ID")
 wos_overwrite_raw = _get_env_str("WOS_OVERWRITE")
 
-print("Searching author...", flush=True)
+print("Loading Google Scholar profile...", flush=True)
 if not os.path.exists("dist"):
     os.makedirs("dist")
 
 try:
-    if args.scholar:
-        author_seed = {
-            "affiliation": "",
-            "citedby": 0,
-            "email_domain": "",
-            "filled": [],
-            "interests": [],
-            "name": "",
-            "scholar_id": args.scholar,
-            "source": "",
-            "url_picture": "",
-            "container_type": "Author",
-        }
-    else:
-        author_seed = None
-        for candidate in scholarly.search_author(args.author):
-            if isinstance(candidate, dict):
-                author_seed = candidate
-                break
-        else:
-            raise StopIteration
-    print("Author found", flush=True)
+    author_seed = {
+        "affiliation": "",
+        "citedby": 0,
+        "email_domain": "",
+        "filled": [],
+        "interests": [],
+        "name": "",
+        "scholar_id": scholar_id,
+        "source": "",
+        "url_picture": "",
+        "container_type": "Author",
+    }
+    print("Google Scholar profile found", flush=True)
     author = scholarly.fill(author_seed)
-    print("Author filled", flush=True)
+    print("Google Scholar profile filled", flush=True)
     total_cite = author["citedby"]
 
     # Update citation metadata with Google Scholar data
@@ -140,11 +133,6 @@ except MaxTriesExceededException:
     citation_metadata["google_scholar"]["status"] = "failed"
     citation_metadata["google_scholar"]["error"] = "Max proxy retries exceeded"
     gs_status = {"success": False, "reason": "Max proxy retries exceeded"}
-except StopIteration:
-    print("Author not found", flush=True)
-    citation_metadata["google_scholar"]["status"] = "failed"
-    citation_metadata["google_scholar"]["error"] = f"Author '{args.author}' not found"
-    gs_status = {"success": False, "reason": f"Author '{args.author}' not found"}
 except Exception as e:
     print(f"An unexpected error occurred with Google Scholar: {e}", flush=True)
     traceback.print_exc()

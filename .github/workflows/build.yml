@@ -51,8 +51,11 @@ jobs:
       - name: Generate badges
         shell: bash
         env:
+          SCHOLAR: ${{ secrets.SCHOLAR }}
           WOS_OVERWRITE: ${{ secrets.WOS_OVERWRITE }}
-        run: timeout 3m python -u main.py --author '${{ secrets.AUTHOR }}' --scholar='${{ secrets.SCHOLAR }}' --gen_summary
+        run: |
+          : "${SCHOLAR:?SCHOLAR secret is required}"
+          timeout 3m python -u main.py --scholar "${SCHOLAR}" --gen_summary
 
       - name: Check if citation data was updated
         id: check_update
