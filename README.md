@@ -16,7 +16,7 @@
     </a>    
 </div>
 
-Automatically generate citation badges from Google Scholar and Web of Science webpage.
+Automatically generate citation badges from Google Scholar and a manually supplied Web of Science peer review count.
 
 ### Example:
 
@@ -30,7 +30,7 @@ Reviews badge: <img src="https://cite.controlnet.space/review.svg">
 2. **Set up GitHub Secrets** (Repository Settings → Secrets → Actions):
    - `AUTHOR`: Your name as it appears on Google Scholar (at least one of `SCHOLAR` or `AUTHOR` is required)
    - `SCHOLAR`: Your Google Scholar ID (at least one of `SCHOLAR` or `AUTHOR` is required)
-   - `WOS`: Your Web of Science ID (optional)
+   - `WOS_OVERWRITE`: Your Web of Science peer review count (optional)
    - `CNAME`: Custom domain for GitHub Pages (optional)
    - `DEPLOY_TOKEN`: Used to trigger the deployment workflow if you have another repository that need to re-deploy to access the citation data. You can use personal access token of your account or the deploy token in the repository (optional)
 3. **Enable GitHub Pages** to use the `dist` branch
@@ -60,7 +60,7 @@ docker build -t controlnet/citation-badge .
 Required env vars:
 
 - `AUTHOR` or `SCHOLAR` (set at least one)
-- `WOS` is optional and remains disabled by default in Docker unless `ENABLE_WOS=1`
+- `WOS_OVERWRITE` is optional and generates the Web of Science peer review badge when set to a non-negative integer
 
 Optional runtime user mapping:
 

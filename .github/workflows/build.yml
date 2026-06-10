@@ -49,7 +49,7 @@ jobs:
         shell: bash
         env:
           WOS_OVERWRITE: ${{ secrets.WOS_OVERWRITE }}
-        run: timeout 3m python -u main.py --author '${{ secrets.AUTHOR }}' --scholar='${{ secrets.SCHOLAR }}' --wos '${{ secrets.WOS }}' --gen_summary
+        run: timeout 3m python -u main.py --author '${{ secrets.AUTHOR }}' --scholar='${{ secrets.SCHOLAR }}' --gen_summary
 
       - name: Check if citation data was updated
         id: check_update
