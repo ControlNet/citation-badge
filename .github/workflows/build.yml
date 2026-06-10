@@ -55,7 +55,21 @@ jobs:
           WOS_OVERWRITE: ${{ secrets.WOS_OVERWRITE }}
         run: |
           : "${SCHOLAR:?SCHOLAR secret is required}"
+          set +e
           timeout 3m python -u main.py --scholar="${SCHOLAR}" --gen_summary
+          status=$?
+          set -e
+
+          if [ "${status}" -eq 124 ]; then
+            printf 'false' > citation_updated.flag
+            printf '%s\n\n%s\n' \
+              'Citation Badge Generation' \
+              'Google Scholar refresh timed out after 3 minutes. Previous dist artifacts were preserved and no update will be pushed.' \
+              > summary.md
+            exit 0
+          fi
+
+          exit "${status}"
 
       - name: Check if citation data was updated
         id: check_update
