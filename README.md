@@ -32,7 +32,8 @@ Reviews badge: <img src="https://cite.controlnet.space/review.svg">
    - `SCHOLAR`: Your Google Scholar ID (at least one of `SCHOLAR` or `AUTHOR` is required)
    - `WOS_OVERWRITE`: Your Web of Science peer review count (optional)
    - `CNAME`: Custom domain for GitHub Pages (optional)
-   - `DEPLOY_TOKEN`: Used to trigger the deployment workflow if you have another repository that need to re-deploy to access the citation data. You can use personal access token of your account or the deploy token in the repository (optional)
+   - `DEPLOY_TOKEN`: Used with `DEPLOY_TARGET` to trigger another repository's deployment workflow after citation data updates (optional)
+   - `DEPLOY_TARGET`: Target workflow in `owner/repo@ref:workflow_id` format, such as `ControlNet/profile@main:deploy.yml` (optional)
 3. **Enable GitHub Pages** to use the `dist` branch
 
 ## Self-hosted Docker runtime
