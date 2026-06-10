@@ -19,6 +19,7 @@ GOOGLE_SCHOLAR_SOURCE = "google_scholar"
 WEB_OF_SCIENCE_SOURCE = "web_of_science"
 SUPPORTED_SOURCES = frozenset({GOOGLE_SCHOLAR_SOURCE, WEB_OF_SCIENCE_SOURCE})
 PROCESS_POLL_INTERVAL_SECONDS = 0.2
+PROFILE_TIMEOUT_SECONDS = 180
 
 ProcessStartedCallback = Callable[[subprocess.Popen[str]], None]
 
@@ -66,6 +67,8 @@ def build_worker_argv(
 
     if _has_cli_value(scholar):
         argv.extend(["--scholar", str(scholar)])
+
+    argv.extend(["--timeout", str(PROFILE_TIMEOUT_SECONDS)])
 
     return argv
 
