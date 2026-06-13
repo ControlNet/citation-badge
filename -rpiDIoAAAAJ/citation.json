@@ -1,0 +1,171 @@
+{
+  "generated_at": "2026-06-13T22:03:07.641633",
+  "google_scholar": {
+    "status": "success",
+    "total_citations": 762,
+    "5y_citations": 762,
+    "total_hindex": 12,
+    "5y_hindex": 12,
+    "total_i10index": 12,
+    "5y_i10index": 12,
+    "cites_per_year": {
+      "2022": 2,
+      "2023": 32,
+      "2024": 162,
+      "2025": 341,
+      "2026": 225
+    },
+    "publications": [
+      {
+        "author_pub_id": "-rpiDIoAAAAJ:zYLM7Y9cAGgC",
+        "title": "Do you really mean that? Content driven audio-visual deepfake dataset and multimodal method for temporal forgery localization",
+        "year": "2022",
+        "citations": 164
+      },
+      {
+        "author_pub_id": "-rpiDIoAAAAJ:u-x6o8ySG0sC",
+        "title": "MARLIN: Masked Autoencoder for Facial Video Representation LearnINg",
+        "year": "2023",
+        "citations": 152
+      },
+      {
+        "author_pub_id": "-rpiDIoAAAAJ:5nxA0vEk-isC",
+        "title": "AV-Deepfake1M: A large-scale LLM-driven audio-visual deepfake dataset",
+        "year": "2024",
+        "citations": 147
+      },
+      {
+        "author_pub_id": "-rpiDIoAAAAJ:W7OEmFMy1HYC",
+        "title": "Glitch in the matrix: A large scale benchmark for content driven audio–visual forgery detection and localization",
+        "year": "2023",
+        "citations": 96
+      },
+      {
+        "author_pub_id": "-rpiDIoAAAAJ:YsMSGLbcyi4C",
+        "title": "HYDRA: A Hyper Agent for Dynamic Compositional Visual Reasoning",
+        "year": "2024",
+        "citations": 35
+      },
+      {
+        "author_pub_id": "-rpiDIoAAAAJ:eQOLeE2rZwMC",
+        "title": "JRDB-Social: A Multifaceted Robotic Dataset for Understanding of Context and Dynamics of Human Interactions Within Social Groups",
+        "year": "2024",
+        "citations": 31
+      },
+      {
+        "author_pub_id": "-rpiDIoAAAAJ:8k81kl-MbHgC",
+        "title": "1M-Deepfakes Detection Challenge",
+        "year": "2024",
+        "citations": 23
+      },
+      {
+        "author_pub_id": "-rpiDIoAAAAJ:aqlVkmm33-oC",
+        "title": "Explain Before You Answer: A Survey on Compositional Visual Reasoning",
+        "year": "2025",
+        "citations": 21
+      },
+      {
+        "author_pub_id": "-rpiDIoAAAAJ:Se3iqnhoufwC",
+        "title": "Hier-SLAM: Scaling-up Semantics in SLAM with a Hierarchically Categorical Gaussian Splatting",
+        "year": "2025",
+        "citations": 19
+      },
+      {
+        "author_pub_id": "-rpiDIoAAAAJ:roLk4NBRz8UC",
+        "title": "NEUSIS: A Compositional Neuro-Symbolic Framework for Autonomous Perception, Reasoning, and Planning in Complex UAV Search Missions",
+        "year": "2025",
+        "citations": 18
+      },
+      {
+        "author_pub_id": "-rpiDIoAAAAJ:kNdYIx-mwKoC",
+        "title": "NAVER: A Neuro-Symbolic Compositional Automaton for Visual Grounding with Explicit Logic Reasoning",
+        "year": "2025",
+        "citations": 15
+      },
+      {
+        "author_pub_id": "-rpiDIoAAAAJ:M3ejUd6NZC8C",
+        "title": "AV-Deepfake1M++: A Large-Scale Audio-Visual Deepfake Benchmark with Real-World Perturbations",
+        "year": "2025",
+        "citations": 12
+      },
+      {
+        "author_pub_id": "-rpiDIoAAAAJ:KlAtU1dfN6UC",
+        "title": "DWIM: Towards Tool-aware Visual Reasoning via Discrepancy-aware Workflow Generation & Instruct-Masking Tuning",
+        "year": "2025",
+        "citations": 9
+      },
+      {
+        "author_pub_id": "-rpiDIoAAAAJ:3fE2CSJIrl8C",
+        "title": "MRAC Track 1: 2nd Workshop on Multimodal, Generative and Responsible Affective Computing",
+        "year": "2024",
+        "citations": 8
+      },
+      {
+        "author_pub_id": "-rpiDIoAAAAJ:YOwf2qJgpHMC",
+        "title": "Emolysis: A multimodal open-source group emotion analysis and visualization toolkit",
+        "year": "2024",
+        "citations": 6
+      },
+      {
+        "author_pub_id": "-rpiDIoAAAAJ:9ZlFYXVOiuMC",
+        "title": "Multimodal Deepfake Generation and Detection: Challenges, Methods, and Future Directions",
+        "year": "2025",
+        "citations": 2
+      },
+      {
+        "author_pub_id": "-rpiDIoAAAAJ:ZeXyd9-uunAC",
+        "title": "VIEW2SPACE: Studying Multi-View Visual Reasoning from Sparse Observations",
+        "year": "2026",
+        "citations": 1
+      },
+      {
+        "author_pub_id": "-rpiDIoAAAAJ:qxL8FJ1GzNcC",
+        "title": "JRDB-Reasoning: A Difficulty-Graded Benchmark for Visual Reasoning in Robotics",
+        "year": "2026",
+        "citations": 1
+      },
+      {
+        "author_pub_id": "-rpiDIoAAAAJ:dhFuZR0502QC",
+        "title": "MATA: A Trainable Hierarchical Automaton System for Multi-Agent Visual Reasoning",
+        "year": "2026",
+        "citations": 1
+      },
+      {
+        "author_pub_id": "-rpiDIoAAAAJ:UeHWp8X0CEIC",
+        "title": "Pavlok-Nudge: A Feedback Mechanism for Atomic Behaviour Modification with Snoring Usecase",
+        "year": "2023",
+        "citations": 1
+      },
+      {
+        "author_pub_id": "-rpiDIoAAAAJ:IWHjjKOFINEC",
+        "title": "Mini-BEHAVIOR-Gran: Revealing U-Shaped Effects of Instruction Granularity on Language-Guided Embodied Agents",
+        "year": "2026",
+        "citations": 0
+      },
+      {
+        "author_pub_id": "-rpiDIoAAAAJ:QIV2ME_5wuYC",
+        "title": "MRAC 2025: 3rd International Workshop on Multimodal, Generative and Responsible Affective Computing",
+        "year": "2025",
+        "citations": 0
+      },
+      {
+        "author_pub_id": "-rpiDIoAAAAJ:4DMP91E08xMC",
+        "title": "MRAC'24 Chairs' Welcome",
+        "year": "2024",
+        "citations": 0
+      },
+      {
+        "author_pub_id": "-rpiDIoAAAAJ:ufrVoPGSRksC",
+        "title": "Content-Driven Multimodal Deepfake Generation and Temporal Localization",
+        "year": "2024",
+        "citations": 0
+      }
+    ],
+    "error": null
+  },
+  "web_of_science": {
+    "status": "success",
+    "peer_reviews": 107,
+    "error": null
+  }
+}
