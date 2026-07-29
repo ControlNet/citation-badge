@@ -112,7 +112,7 @@ def _dist_snapshot() -> dict[str, str]:
 
 def _fill_author_worker(author_seed: dict, result_queue) -> None:
     try:
-        result_queue.put(("success", scholarly.fill(author_seed)))
+        result_queue.put(("success", scholarly.fill(author_seed, sortby="year")))
     except Exception as e:
         result_queue.put(("error", e.__class__.__name__, str(e), traceback.format_exc()))
 
