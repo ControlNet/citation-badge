@@ -68,7 +68,7 @@ class Settings:
         self.app_port = _get_env_int("APP_PORT", DEFAULT_APP_PORT)
         self.state_dir = _get_env_str("STATE_DIR", DEFAULT_STATE_DIR)
         self.scholar = _get_env_optional_str("SCHOLAR")
-        self.wos_overwrite = _get_env_optional_str("WOS_OVERWRITE")
+        self.peer_review = _get_env_optional_str("PEER_REVIEW")
         self.cron_schedule = _get_env_str("CRON_SCHEDULE", DEFAULT_CRON_SCHEDULE)
         self.timezone = _get_env_str("TIMEZONE", DEFAULT_TIMEZONE)
         self.refresh_on_startup = _get_env_bool(
@@ -81,8 +81,8 @@ class Settings:
         )
 
     @property
-    def wos_enabled(self) -> bool:
-        return bool(self.wos_overwrite)
+    def peer_review_enabled(self) -> bool:
+        return bool(self.peer_review)
 
     def model_dump(self) -> dict[str, Any]:
         return {
@@ -93,5 +93,5 @@ class Settings:
             "timezone": self.timezone,
             "refresh_on_startup": self.refresh_on_startup,
             "worker_timeout_seconds": self.worker_timeout_seconds,
-            "wos_overwrite_configured": bool(self.wos_overwrite),
+            "peer_review_configured": bool(self.peer_review),
         }

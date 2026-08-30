@@ -49,7 +49,9 @@ def empty_status(
         },
         "sources": {
             "google_scholar": _empty_source_state(enabled=True),
-            "web_of_science": _empty_source_state(enabled=runtime_settings.wos_enabled),
+            "web_of_science": _empty_source_state(
+                enabled=runtime_settings.peer_review_enabled
+            ),
         },
     }
 

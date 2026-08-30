@@ -18,7 +18,14 @@ MAIN_PATH = REPO_ROOT / "main.py"
 
 class MultiProfileCliTest(unittest.TestCase):
     def run_main(
-        self, scholar_arg, authors, *, wos_overwrite=None, workdir=None, timeout=180
+        self,
+        scholar_arg,
+        authors,
+        *,
+        peer_review=None,
+        extra_env=None,
+        workdir=None,
+        timeout=180,
     ):
         temp_dir = workdir or tempfile.mkdtemp(prefix="citation-badge-test-")
         old_cwd = os.getcwd()
@@ -33,7 +40,8 @@ class MultiProfileCliTest(unittest.TestCase):
             pass
 
         class FakeScholarly:
-            def fill(self, author_seed):
+            def fill(self, author_seed, sortby=None):
+                self.assert_sortby(sortby)
                 scholar_id = author_seed["scholar_id"]
                 result = authors[scholar_id]
                 if isinstance(result, Exception):
@@ -41,6 +49,11 @@ class MultiProfileCliTest(unittest.TestCase):
                 if callable(result):
                     return result()
                 return result
+
+            @staticmethod
+            def assert_sortby(sortby):
+                if sortby != "year":
+                    raise AssertionError(f"Expected sortby='year', got {sortby!r}")
 
         class FakeResponse:
             def __init__(self, url):
@@ -66,8 +79,10 @@ class MultiProfileCliTest(unittest.TestCase):
             "--gen_summary",
         ]
         os.environ.clear()
-        if wos_overwrite is not None:
-            os.environ["WOS_OVERWRITE"] = str(wos_overwrite)
+        if peer_review is not None:
+            os.environ["PEER_REVIEW"] = str(peer_review)
+        if extra_env is not None:
+            os.environ.update(extra_env)
 
         stdout = io.StringIO()
         try:
@@ -113,7 +128,7 @@ class MultiProfileCliTest(unittest.TestCase):
         self.temp_dir, _ = self.run_main(
             " id1, id2,,id1 ",
             {"id1": self.author("id1", 12), "id2": self.author("id2", 20)},
-            wos_overwrite=7,
+            peer_review=7,
         )
 
         dist = self.temp_dir / "dist"
@@ -193,7 +208,7 @@ class MultiProfileCliTest(unittest.TestCase):
         )
         self.assertEqual((temp_dir / "citation_updated.flag").read_text(), "false")
 
-    def test_wos_only_same_artifact_does_not_set_update_flag(self):
+    def test_peer_review_only_same_artifact_does_not_set_update_flag(self):
         temp_dir = Path(tempfile.mkdtemp(prefix="citation-badge-test-"))
         self.temp_dir = temp_dir
         dist = temp_dir / "dist"
@@ -205,21 +220,21 @@ class MultiProfileCliTest(unittest.TestCase):
         _, _ = self.run_main(
             "id1",
             {"id1": RuntimeError("scholar timeout")},
-            wos_overwrite=7,
+            peer_review=7,
             workdir=temp_dir,
         )
 
         self.assertFalse((dist / "citation.json").exists())
         self.assertEqual((temp_dir / "citation_updated.flag").read_text(), "false")
 
-    def test_success_without_wos_keeps_root_and_first_profile_review_consistent(self):
+    def test_success_without_peer_review_keeps_root_and_first_profile_review_consistent(self):
         temp_dir = Path(tempfile.mkdtemp(prefix="citation-badge-test-"))
         self.temp_dir = temp_dir
 
         self.run_main(
             "id1",
             {"id1": self.author("id1", 12)},
-            wos_overwrite=7,
+            peer_review=7,
             workdir=temp_dir,
         )
         self.run_main("id1", {"id1": self.author("id1", 13)}, workdir=temp_dir)
@@ -236,6 +251,22 @@ class MultiProfileCliTest(unittest.TestCase):
             (dist / "review.svg").exists(), (dist / "id1" / "review.svg").exists()
         )
         self.assertTrue((dist / "id1" / "review.svg").exists())
+
+    def test_legacy_wos_overwrite_is_not_used(self):
+        self.temp_dir, _ = self.run_main(
+            "id1",
+            {"id1": self.author("id1", 12)},
+            extra_env={"WOS_OVERWRITE": "7"},
+        )
+
+        dist = self.temp_dir / "dist"
+        root_data = json.loads((dist / "citation.json").read_text(encoding="utf-8"))
+        self.assertEqual(root_data["web_of_science"]["status"], "skipped")
+        self.assertFalse((dist / "review.svg").exists())
+        self.assertIn(
+            "PEER_REVIEW not provided",
+            (self.temp_dir / "summary.md").read_text(encoding="utf-8"),
+        )
 
     def test_later_profile_timeout_preserves_first_profile_update(self):
         def slow_id2():

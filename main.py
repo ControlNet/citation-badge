@@ -70,7 +70,7 @@ def _write_badge(path: Path, label: str, value: str, color: str) -> None:
         )
 
 
-def _write_wos_badge(output_dir: Path, review_count: str) -> None:
+def _write_review_badge(output_dir: Path, review_count: str) -> None:
     _write_badge(output_dir / "review.svg", "peer reviews", review_count, "8A2BE2")
 
 
@@ -260,13 +260,13 @@ def _mirror_first_profile_to_root(profile_dir: Path) -> None:
         shutil.copy2(svg_path, DIST_DIR / svg_path.name)
 
 
-def _profile_wos_metadata(
-    wos_overwrite_raw: str | None, first_profile_dir: Path | None
+def _profile_peer_review_metadata(
+    peer_review_raw: str | None, first_profile_dir: Path | None
 ) -> tuple[dict, dict]:
-    if wos_overwrite_raw is None:
+    if peer_review_raw is None:
         return (
             {"status": "skipped", "peer_reviews": 0, "error": None},
-            {"success": False, "reason": "WOS_OVERWRITE not provided"},
+            {"success": False, "reason": "PEER_REVIEW not provided"},
         )
 
     if first_profile_dir is None:
@@ -274,40 +274,42 @@ def _profile_wos_metadata(
             {
                 "status": "failed",
                 "peer_reviews": 0,
-                "error": "No successful first profile for WOS_OVERWRITE",
+                "error": "No successful first profile for PEER_REVIEW",
             },
             {
                 "success": False,
-                "reason": "No successful first profile for WOS_OVERWRITE",
+                "reason": "No successful first profile for PEER_REVIEW",
             },
         )
 
-    print(f"Using WOS overwrite: {wos_overwrite_raw}", flush=True)
+    print(f"Using peer review count: {peer_review_raw}", flush=True)
     try:
-        review_count = int(wos_overwrite_raw)
+        review_count = int(peer_review_raw)
         if review_count < 0:
-            raise ValueError("WOS_OVERWRITE must be a non-negative integer")
+            raise ValueError("PEER_REVIEW must be a non-negative integer")
 
-        _write_wos_badge(first_profile_dir, str(review_count))
+        _write_review_badge(first_profile_dir, str(review_count))
         print("Review badge generated", flush=True)
         return (
             {"status": "success", "peer_reviews": review_count, "error": None},
-            {"success": True, "reason": f"Peer reviews: {review_count} (override)"},
+            {"success": True, "reason": f"Peer reviews: {review_count}"},
         )
     except Exception as e:
-        print(f"An error occurred during WOS overwrite processing: {e}", flush=True)
+        print(f"An error occurred during peer review processing: {e}", flush=True)
         return (
             {"status": "failed", "peer_reviews": 0, "error": str(e)},
-            {"success": False, "reason": f"WOS Override Error: {e}"},
+            {"success": False, "reason": f"Peer Review Error: {e}"},
         )
 
 
-def _select_profile_wos(previous_profile_data: dict, current_wos: dict) -> dict:
-    if current_wos["status"] == "success":
-        return current_wos
+def _select_profile_peer_review(
+    previous_profile_data: dict, current_peer_review: dict
+) -> dict:
+    if current_peer_review["status"] == "success":
+        return current_peer_review
     if previous_profile_data.get("web_of_science", {}).get("status") == "success":
         return previous_profile_data["web_of_science"]
-    return current_wos
+    return current_peer_review
 
 
 def _save_update_flag(updated: bool) -> None:
@@ -315,7 +317,11 @@ def _save_update_flag(updated: bool) -> None:
         f.write("true" if updated else "false")
 
 
-def _write_summary(profile_statuses: list[dict], wos_status: dict, include_wos: bool) -> None:
+def _write_summary(
+    profile_statuses: list[dict],
+    peer_review_status: dict,
+    include_peer_review: bool,
+) -> None:
     summary_content = """
 # Citation Badge Generation
 
@@ -334,11 +340,19 @@ def _write_summary(profile_statuses: list[dict], wos_status: dict, include_wos: 
             f"{profile_status['reason']:<32} |\n"
         )
 
-    if include_wos:
-        wos_icon = "✅ Success" if wos_status["success"] else "❌ Failed"
-        summary_content += f"| Web of Science  | {wos_icon:<8}| {wos_status['reason']:<32} |\n"
+    if include_peer_review:
+        peer_review_icon = (
+            "✅ Success" if peer_review_status["success"] else "❌ Failed"
+        )
+        summary_content += (
+            f"| Peer review     | {peer_review_icon:<8}| "
+            f"{peer_review_status['reason']:<32} |\n"
+        )
     else:
-        summary_content += f"| Web of Science  | ⚠️ Skipped | {wos_status['reason']:<32} |\n"
+        summary_content += (
+            f"| Peer review     | ⚠️ Skipped | "
+            f"{peer_review_status['reason']:<32} |\n"
+        )
 
     with open("summary.md", "w", encoding="utf-8") as f:
         f.write(summary_content)
@@ -371,7 +385,7 @@ def main() -> None:
     initial_dist_snapshot = _dist_snapshot()
     STAGING_DIR.mkdir(parents=True, exist_ok=True)
 
-    wos_overwrite_raw = _get_env_str("WOS_OVERWRITE")
+    peer_review_raw = _get_env_str("PEER_REVIEW")
     profile_timeout_seconds = args.timeout
     profile_results = {}
     profile_statuses = []
@@ -419,22 +433,22 @@ def main() -> None:
     first_profile_has_data = first_result["success"] or _has_successful_google_scholar(
         first_profile_dir / "citation.json"
     )
-    current_wos, wos_status = _profile_wos_metadata(
-        wos_overwrite_raw, first_profile_dir if first_profile_has_data else None
+    current_peer_review, peer_review_status = _profile_peer_review_metadata(
+        peer_review_raw, first_profile_dir if first_profile_has_data else None
     )
 
     should_refresh_root = first_result["success"] or (
-        first_profile_has_data and wos_status["success"]
+        first_profile_has_data and peer_review_status["success"]
     )
     if should_refresh_root:
         first_profile_data = _load_json(first_profile_dir / "citation.json")
-        selected_wos = _select_profile_wos(
-            previous_profile_data[first_id], current_wos
+        selected_peer_review = _select_profile_peer_review(
+            previous_profile_data[first_id], current_peer_review
         )
-        first_profile_data["web_of_science"] = selected_wos
+        first_profile_data["web_of_science"] = selected_peer_review
         if (
-            selected_wos.get("status") == "success"
-            and current_wos.get("status") != "success"
+            selected_peer_review.get("status") == "success"
+            and current_peer_review.get("status") != "success"
             and first_id in previous_profile_review
         ):
             (first_profile_dir / "review.svg").write_bytes(previous_profile_review[first_id])
@@ -459,7 +473,11 @@ def main() -> None:
     print(f"Citation update flag set to {str(updated).lower()}", flush=True)
 
     if args.gen_summary:
-        _write_summary(profile_statuses, wos_status, wos_overwrite_raw is not None)
+        _write_summary(
+            profile_statuses,
+            peer_review_status,
+            peer_review_raw is not None,
+        )
 
 
 if __name__ == "__main__":

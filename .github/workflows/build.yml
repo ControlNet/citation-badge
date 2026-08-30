@@ -52,7 +52,7 @@ jobs:
         shell: bash
         env:
           SCHOLAR: ${{ secrets.SCHOLAR }}
-          WOS_OVERWRITE: ${{ secrets.WOS_OVERWRITE }}
+          PEER_REVIEW: ${{ secrets.PEER_REVIEW }}
         run: |
           : "${SCHOLAR:?SCHOLAR secret is required}"
           python -u main.py --scholar="${SCHOLAR}" --timeout 180 --gen_summary

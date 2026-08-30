@@ -222,7 +222,7 @@ class ServiceRuntime:
         if google_scholar.get("status") == "disabled":
             google_scholar["status"] = "never_succeeded"
 
-        if self.settings.wos_enabled:
+        if self.settings.peer_review_enabled:
             web_of_science = payload["sources"]["web_of_science"]
             web_of_science["enabled"] = True
             if web_of_science.get("status") == "disabled":
@@ -306,11 +306,12 @@ class ServiceRuntime:
                 script_path=self.worker_script_path,
             )
             _LOGGER.info(
-                "worker starting: trigger=%s staged_run_dir=%s scholar_configured=%s wos_enabled=%s",
+                "worker starting: trigger=%s staged_run_dir=%s "
+                "scholar_configured=%s peer_review_enabled=%s",
                 trigger_reason,
                 staged_run_dir,
                 bool(self.settings.scholar),
-                self.settings.wos_enabled,
+                self.settings.peer_review_enabled,
             )
             completed = run_worker_subprocess(
                 argv,
@@ -449,7 +450,7 @@ class ServiceRuntime:
             previous_status.get("sources", {}).get("google_scholar"),
             attempted_at,
         )
-        if self.settings.wos_enabled:
+        if self.settings.peer_review_enabled:
             payload["sources"]["web_of_science"] = _running_source_state(
                 previous_status.get("sources", {}).get("web_of_science"),
                 attempted_at,
@@ -515,7 +516,7 @@ class ServiceRuntime:
         citation_payload: Mapping[str, Any] | None,
         fallback_error: str,
     ) -> dict[str, Any]:
-        if not self.settings.wos_enabled:
+        if not self.settings.peer_review_enabled:
             return _disabled_source_state(previous_status)
 
         if _source_succeeded(citation_payload, "web_of_science"):
@@ -608,14 +609,15 @@ class CitationServiceHTTPServer(ThreadingHTTPServer):
 
     def start_background_services(self) -> None:
         _LOGGER.info(
-            "service starting background services: host=%s port=%s state_dir=%s cron=%s timezone=%s refresh_on_startup=%s wos_enabled=%s",
+            "service starting background services: host=%s port=%s state_dir=%s "
+            "cron=%s timezone=%s refresh_on_startup=%s peer_review_enabled=%s",
             self.settings.app_host,
             self.settings.app_port,
             self.settings.state_dir,
             self.settings.cron_schedule,
             self.settings.timezone,
             self.settings.refresh_on_startup,
-            self.settings.wos_enabled,
+            self.settings.peer_review_enabled,
         )
         self.runtime.synchronize_status()
         self.scheduler.start()
