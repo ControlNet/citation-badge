@@ -119,7 +119,11 @@ class MultiProfileCliTest(unittest.TestCase):
                 {
                     "author_pub_id": f"{scholar_id}:paper",
                     "num_citations": citations // 2,
-                    "bib": {"title": f"Paper {scholar_id}", "pub_year": "2026"},
+                    "bib": {
+                        "title": f"Paper {scholar_id}",
+                        "pub_year": "2026",
+                        "citation": "Example Journal 12 (3), 45-67, 2026",
+                    },
                 }
             ],
         }
@@ -150,6 +154,10 @@ class MultiProfileCliTest(unittest.TestCase):
         id2_data = json.loads((dist / "id2" / "citation.json").read_text(encoding="utf-8"))
         self.assertEqual(root_data, id1_data)
         self.assertEqual(root_data["google_scholar"]["total_citations"], 12)
+        self.assertEqual(
+            root_data["google_scholar"]["publications"][0]["venue"],
+            "Example Journal 12 (3), 45-67, 2026",
+        )
         self.assertEqual(root_data["web_of_science"]["peer_reviews"], 7)
         self.assertEqual(root_data["web_of_science"]["status"], "success")
         self.assertEqual(id2_data["web_of_science"]["status"], "skipped")

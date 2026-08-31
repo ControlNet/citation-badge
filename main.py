@@ -200,6 +200,7 @@ def generate_scholar_to_dir(
                     "author_pub_id": pub.get("author_pub_id", ""),
                     "title": pub.get("bib", {}).get("title", ""),
                     "year": pub.get("bib", {}).get("pub_year", ""),
+                    "venue": pub.get("bib", {}).get("citation", ""),
                     "citations": pub_cite,
                 }
             )
