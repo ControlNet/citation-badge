@@ -73,6 +73,27 @@ Mounted state volume:
 
 Then you can access the served files as same as the GitHub, such as `localhost:8000/all.svg`, `localhost:8000/citation.json`, etc.
 
+### Automatic Docker Hub publishing
+
+The `Publish Docker image` workflow builds and pushes
+`controlnet/citation-badge:latest` for `linux/amd64` on pushes to `master` or
+`main`. It can also be run manually from the repository's Actions tab. It uses
+GitHub Actions build caching and runs independently of the badge update workflow.
+
+Configure these repository Actions secrets:
+
+- `DOCKERHUB_USERNAME`: Docker Hub username with write access to `controlnet/citation-badge`.
+- `DOCKERHUB_PASSWORD`: Docker Hub access token or password with permission to push the image.
+
+Keep credentials in GitHub Secrets; do not put them in source files or commit a
+local `.env.local` file. Add `.env.local` to `.gitignore` if using it locally.
+
+After the workflow succeeds, pull the published image:
+
+```bash
+docker pull controlnet/citation-badge:latest
+```
+
 ## Usage
 
 Badges update automatically hourly. Embed them in your sites:
