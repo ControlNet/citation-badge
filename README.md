@@ -3,17 +3,29 @@
 
 <div align="center">
     <a href="https://github.com/ControlNet/citation-badge/issues">
-        <img src="https://img.shields.io/github/issues/ControlNet/citation-badge?style=flat-square">
+        <img src="https://img.shields.io/github/issues/ControlNet/citation-badge?style=flat-square" alt="GitHub issues">
     </a>
     <a href="https://github.com/ControlNet/citation-badge/network/members">
-        <img src="https://img.shields.io/github/forks/ControlNet/citation-badge?style=flat-square">
+        <img src="https://img.shields.io/github/forks/ControlNet/citation-badge?style=flat-square" alt="GitHub forks">
     </a>
     <a href="https://github.com/ControlNet/citation-badge/stargazers">
-        <img src="https://img.shields.io/github/stars/ControlNet/citation-badge?style=flat-square">
+        <img src="https://img.shields.io/github/stars/ControlNet/citation-badge?style=flat-square" alt="GitHub stars">
     </a>
     <a href="https://github.com/ControlNet/citation-badge/blob/master/LICENSE">
-        <img src="https://img.shields.io/github/license/ControlNet/citation-badge?style=flat-square">
-    </a>    
+        <img src="https://img.shields.io/github/license/ControlNet/citation-badge?style=flat-square" alt="License">
+    </a>
+    <a href="https://github.com/ControlNet/citation-badge/actions/workflows/build.yml">
+        <img src="https://img.shields.io/github/actions/workflow/status/ControlNet/citation-badge/build.yml?branch=master&amp;style=flat-square&amp;logo=githubactions&amp;label=Badges" alt="Badge generation workflow status">
+    </a>
+    <a href="https://github.com/ControlNet/citation-badge/actions/workflows/docker-publish.yml">
+        <img src="https://img.shields.io/github/actions/workflow/status/ControlNet/citation-badge/docker-publish.yml?branch=master&amp;style=flat-square&amp;logo=githubactions&amp;label=Docker%20publish" alt="Docker publishing workflow status">
+    </a>
+    <a href="https://hub.docker.com/r/controlnet/citation-badge">
+        <img src="https://img.shields.io/docker/image-size/controlnet/citation-badge/latest?style=flat-square&amp;logo=docker&amp;label=Docker" alt="Docker image size for latest">
+    </a>
+    <a href="https://hub.docker.com/r/controlnet/citation-badge">
+        <img src="https://img.shields.io/docker/pulls/controlnet/citation-badge?style=flat-square&amp;logo=docker" alt="Docker Hub pulls">
+    </a>
 </div>
 
 Automatically generate citation badges from Google Scholar and a manually supplied peer review count.
