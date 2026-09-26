@@ -16,10 +16,10 @@ jobs:
       DEPLOY_TARGET: ${{ secrets.DEPLOY_TARGET }}
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v7
         with:
           python-version: "3.10"
 
@@ -39,7 +39,7 @@ jobs:
 
       - name: Download previous dist files
         if: steps.check_branch.outputs.exists == 'true'
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           ref: dist
           path: dist
@@ -113,7 +113,7 @@ jobs:
 
       - name: Trigger deployment
         if: ${{ steps.check_update.outputs.updated == 'true' && env.DEPLOY_TOKEN != '' && env.DEPLOY_TARGET != '' }}
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         with:
           github-token: ${{ env.DEPLOY_TOKEN }}
           script: |
