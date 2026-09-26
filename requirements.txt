@@ -3,3 +3,4 @@ APScheduler<4
 httpx<0.28
 requests~=2.26.0
 scholarly~=1.7.11
+bibtexparser<2
