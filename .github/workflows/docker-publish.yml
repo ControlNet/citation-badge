@@ -13,7 +13,27 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  check-credentials:
+    runs-on: ubuntu-24.04
+    outputs:
+      enabled: ${{ steps.check.outputs.enabled }}
+    steps:
+      - name: Check Docker Hub credentials
+        id: check
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
+        run: |
+          if [ -n "$DOCKERHUB_USERNAME" ] && [ -n "$DOCKERHUB_PASSWORD" ]; then
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::DOCKERHUB_USERNAME or DOCKERHUB_PASSWORD is not set; skipping Docker image publish."
+          fi
+
   publish:
+    needs: check-credentials
+    if: needs.check-credentials.outputs.enabled == 'true'
     runs-on: ubuntu-24.04
     timeout-minutes: 30
 
