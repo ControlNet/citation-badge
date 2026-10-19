@@ -9,6 +9,7 @@ import tempfile
 import time
 import types
 import unittest
+from datetime import datetime, timezone
 from pathlib import Path
 
 
@@ -343,6 +344,45 @@ class MultiProfileCliTest(unittest.TestCase):
 
         summary = (self.temp_dir / "summary.md").read_text(encoding="utf-8")
         self.assertNotIn("OpenAlex", summary)
+        data = json.loads((self.temp_dir / "dist" / "citation.json").read_text(encoding="utf-8"))
+        self.assertNotIn("openalex", data["google_scholar"]["publications"][0])
+
+    def test_openalex_cache_is_merged_into_profile_and_root_citation_json(self):
+        workdir = tempfile.mkdtemp(prefix="citation-badge-test-")
+        cache_dir = Path(workdir) / "dist" / "id1" / "openalex"
+        cache_dir.mkdir(parents=True)
+        fetched_at = datetime.now(timezone.utc).isoformat()
+        (cache_dir / "id1_paper.json").write_text(
+            json.dumps(
+                {"status": "matched", "fetched_at": fetched_at,
+                 "openalex_id": "https://openalex.org/W1", "doi": None,
+                 "publication_date": "2026-03-01", "authors": ["A Author"],
+                 "venue": "Example Journal"}
+            ),
+            encoding="utf-8",
+        )
+
+        self.temp_dir, _ = self.run_main(
+            "id1,id2",
+            {"id1": self.author("id1", 12), "id2": self.author("id2", 20)},
+            peer_review=7,
+            workdir=workdir,
+            extra_args=("--openalex",),
+            openalex_requests=[],
+        )
+
+        dist = self.temp_dir / "dist"
+        root_data = json.loads((dist / "citation.json").read_text(encoding="utf-8"))
+        id1_data = json.loads((dist / "id1" / "citation.json").read_text(encoding="utf-8"))
+        id2_data = json.loads((dist / "id2" / "citation.json").read_text(encoding="utf-8"))
+        self.assertEqual(root_data, id1_data)
+        self.assertEqual(root_data["web_of_science"]["peer_reviews"], 7)
+        self.assertEqual(
+            id1_data["google_scholar"]["publications"][0]["openalex"],
+            {"id": "https://openalex.org/W1", "doi": None, "publication_date": "2026-03-01",
+             "authors": ["A Author"], "venue": "Example Journal"},
+        )
+        self.assertIsNone(id2_data["google_scholar"]["publications"][0]["openalex"])
 
     def test_legacy_wos_overwrite_is_not_used(self):
         self.temp_dir, _ = self.run_main(

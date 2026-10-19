@@ -14,7 +14,12 @@ from scholarly import scholarly
 from scholarly._proxy_generator import MaxTriesExceededException
 from scholarly.publication_parser import PublicationParser
 
-from openalex import OpenAlexClient, carry_over_cache, enrich_profiles
+from openalex import (
+    OpenAlexClient,
+    carry_over_cache,
+    enrich_profiles,
+    merge_cache_into_citation,
+)
 
 
 DIST_DIR = Path("dist")
@@ -344,11 +349,18 @@ def _enrich_with_openalex(scholar_ids: list[str]) -> dict:
     client = OpenAlexClient(requests.get, api_key=_get_env_str("OPENALEX_API_KEY"))
     try:
         summary = enrich_profiles(profile_dirs, client)
+        print(f"OpenAlex enrichment: {summary}", flush=True)
     except Exception as e:
         print(f"An unexpected error occurred during OpenAlex enrichment: {e}", flush=True)
         traceback.print_exc()
-        return {"status": "failed", "reason": f"Unexpected error: {e}"}
-    print(f"OpenAlex enrichment: {summary}", flush=True)
+        summary = {"status": "failed", "reason": f"Unexpected error: {e}"}
+
+    # Merge whatever is cached, even after a partial or failed enrichment.
+    for profile_dir in profile_dirs:
+        merge_cache_into_citation(profile_dir)
+    first_profile_dir = DIST_DIR / scholar_ids[0]
+    if first_profile_dir in profile_dirs:
+        shutil.copy2(first_profile_dir / "citation.json", DIST_DIR / "citation.json")
     return summary
 
 

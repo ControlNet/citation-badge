@@ -126,6 +126,10 @@ The GitHub Actions workflow also looks up each Google Scholar publication on Ope
 dist/<GOOGLE_SCHOLAR_ID>/openalex/<GOOGLE_SCHOLAR_ID>_<PUBLICATION_ID>.json
 ```
 
+The main fields are also merged into each publication in `citation.json` as
+`openalex: {id, doi, publication_date, authors, venue}`, or `null` when the paper
+has not been matched (yet).
+
 A paper with an existing file is not looked up again, except for retries of
 `not_found` papers after 7 days and refreshes of matched papers after 30 days. If the
 daily OpenAlex budget runs out mid-run, finished files are kept, the badges are still

@@ -7,7 +7,12 @@ import unittest
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
-from openalex import OpenAlexClient, carry_over_cache, enrich_profiles
+from openalex import (
+    OpenAlexClient,
+    carry_over_cache,
+    enrich_profiles,
+    merge_cache_into_citation,
+)
 
 
 NOW = datetime(2026, 10, 19, 12, 0, tzinfo=timezone.utc)
@@ -276,6 +281,43 @@ class CacheTest(OpenAlexTestCase):
         self.assertEqual(
             sorted(p.name for p in (staged_dir / "openalex").iterdir()), ["id1_kept.json"]
         )
+
+
+class MergeTest(OpenAlexTestCase):
+    def test_merge_adds_openalex_summary_or_null_per_publication(self):
+        profile_dir = self.profile(
+            "id1",
+            [pub("id1:matched", "A"), pub("id1:missing", "B"), pub("id1:none", "C")],
+        )
+        citation_path = profile_dir / "citation.json"
+        citation = json.loads(citation_path.read_text(encoding="utf-8"))
+        citation["web_of_science"] = {"status": "success", "peer_reviews": 7}
+        citation_path.write_text(json.dumps(citation), encoding="utf-8")
+        self.write_record(
+            profile_dir,
+            "id1:matched",
+            {"status": "matched", "fetched_at": NOW.isoformat(),
+             "openalex_id": "https://openalex.org/W1", "doi": "https://doi.org/10.1/W1",
+             "title": "A", "publication_date": "2026-07-13", "publication_year": 2026,
+             "authors": ["Zhixi Cai"], "venue": "CVPR", "type": "article"},
+        )
+        self.write_record(
+            profile_dir, "id1:missing", {"status": "not_found", "checked_at": NOW.isoformat()}
+        )
+
+        merge_cache_into_citation(profile_dir)
+
+        merged = json.loads(citation_path.read_text(encoding="utf-8"))
+        publications = merged["google_scholar"]["publications"]
+        self.assertEqual(
+            publications[0]["openalex"],
+            {"id": "https://openalex.org/W1", "doi": "https://doi.org/10.1/W1",
+             "publication_date": "2026-07-13", "authors": ["Zhixi Cai"], "venue": "CVPR"},
+        )
+        self.assertIsNone(publications[1]["openalex"])
+        self.assertIsNone(publications[2]["openalex"])
+        self.assertEqual(publications[0]["title"], "A")
+        self.assertEqual(merged["web_of_science"], {"status": "success", "peer_reviews": 7})
 
 
 class BudgetTest(OpenAlexTestCase):

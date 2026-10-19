@@ -303,6 +303,34 @@ def carry_over_cache(old_profile_dir: Path, staged_profile_dir: Path) -> None:
             os.replace(path, staged_cache_dir / path.name)
 
 
+def _citation_summary(record: JsonDict | None) -> JsonDict | None:
+    if record is None or record["status"] != "matched":
+        return None
+    return {
+        "id": record.get("openalex_id"),
+        "doi": record.get("doi"),
+        "publication_date": record.get("publication_date"),
+        "authors": record.get("authors", []),
+        "venue": record.get("venue"),
+    }
+
+
+def merge_cache_into_citation(profile_dir: Path) -> None:
+    """Set `publications[].openalex` in citation.json from the cached records."""
+    citation_path = profile_dir / "citation.json"
+    try:
+        with open(citation_path, "r", encoding="utf-8") as f:
+            citation = json.load(f)
+    except (OSError, ValueError):
+        return
+    cache_dir = profile_dir / OPENALEX_DIRNAME
+    for publication in citation.get("google_scholar", {}).get("publications", []):
+        pub_id = publication.get("author_pub_id")
+        record = _load_record(cache_dir / record_filename(pub_id)) if pub_id else None
+        publication["openalex"] = _citation_summary(record)
+    _write_record(citation_path, citation)
+
+
 def _round_robin(queues: list[list[WorkItem]]) -> list[WorkItem]:
     ordered: list[WorkItem] = []
     for index in range(max((len(queue) for queue in queues), default=0)):
