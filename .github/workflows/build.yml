@@ -8,6 +8,12 @@ on:
     - cron: "0 * * * *"
   workflow_dispatch:  # Allow manual triggering
 
+# Runs force-push the dist branch, so overlapping runs would overwrite each
+# other's OpenAlex cache. Queue them instead of cancelling a running one.
+concurrency:
+  group: build-dist
+  cancel-in-progress: false
+
 jobs:
   build:
     runs-on: ubuntu-24.04
