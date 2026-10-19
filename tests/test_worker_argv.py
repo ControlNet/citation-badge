@@ -13,8 +13,17 @@ class WorkerArgvTest(unittest.TestCase):
 
         self.assertEqual(
             argv,
-            ["python", "main.py", "--scholar", "id1", "--timeout", "180"],
+            ["python", "main.py", "--scholar=id1", "--timeout", "180"],
         )
+
+    def test_worker_argv_keeps_dash_prefixed_scholar_id_as_value(self):
+        argv = build_worker_argv(
+            scholar="-rpiDIoAAAAJ,VxAuxMwAAAAJ",
+            python_executable="python",
+            script_path="main.py",
+        )
+
+        self.assertIn("--scholar=-rpiDIoAAAAJ,VxAuxMwAAAAJ", argv)
 
 
 if __name__ == "__main__":

@@ -66,7 +66,8 @@ def build_worker_argv(
     argv = [python_executable, script_path]
 
     if _has_cli_value(scholar):
-        argv.extend(["--scholar", str(scholar)])
+        # Use "=" so Scholar IDs starting with "-" are not parsed as options.
+        argv.append(f"--scholar={scholar}")
 
     argv.extend(["--timeout", str(PROFILE_TIMEOUT_SECONDS)])
 
