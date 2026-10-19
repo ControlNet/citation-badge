@@ -26,6 +26,8 @@ class MultiProfileCliTest(unittest.TestCase):
         extra_env=None,
         workdir=None,
         timeout=180,
+        extra_args=(),
+        openalex_requests=None,
     ):
         temp_dir = workdir or tempfile.mkdtemp(prefix="citation-badge-test-")
         old_cwd = os.getcwd()
@@ -68,7 +70,22 @@ class MultiProfileCliTest(unittest.TestCase):
             def __init__(self, url):
                 self.content = f"badge:{url}".encode("utf-8")
 
-        fake_requests = types.SimpleNamespace(get=lambda url: FakeResponse(url))
+        class FakeOpenAlexResponse:
+            status_code = 429
+            headers = {"x-ratelimit-remaining": "0"}
+
+            def json(self):
+                return {}
+
+        def fake_get(url, **kwargs):
+            if url.startswith("https://api.openalex.org"):
+                if openalex_requests is None:
+                    raise AssertionError(f"Unexpected OpenAlex request: {url}")
+                openalex_requests.append((url, kwargs.get("params"), kwargs.get("headers")))
+                return FakeOpenAlexResponse()
+            return FakeResponse(url)
+
+        fake_requests = types.SimpleNamespace(get=fake_get)
         fake_scholarly_module = types.SimpleNamespace(scholarly=FakeScholarly())
         fake_proxy_module = types.SimpleNamespace(
             MaxTriesExceededException=FakeMaxTriesExceededException
@@ -89,6 +106,7 @@ class MultiProfileCliTest(unittest.TestCase):
             "--timeout",
             str(timeout),
             "--gen_summary",
+            *extra_args,
         ]
         os.environ.clear()
         if peer_review is not None:
@@ -276,6 +294,55 @@ class MultiProfileCliTest(unittest.TestCase):
             (dist / "review.svg").exists(), (dist / "id1" / "review.svg").exists()
         )
         self.assertTrue((dist / "id1" / "review.svg").exists())
+
+    def test_openalex_cache_survives_profile_promotion(self):
+        workdir = tempfile.mkdtemp(prefix="citation-badge-test-")
+        cache_dir = Path(workdir) / "dist" / "id1" / "openalex"
+        cache_dir.mkdir(parents=True)
+        cached = {"status": "matched", "fetched_at": "2026-10-18T00:00:00+00:00"}
+        (cache_dir / "id1_paper.json").write_text(json.dumps(cached), encoding="utf-8")
+        (cache_dir / "id1_removed.json").write_text(json.dumps(cached), encoding="utf-8")
+
+        self.temp_dir, _ = self.run_main(
+            "id1", {"id1": self.author("id1", 12)}, workdir=workdir
+        )
+
+        self.assertEqual(
+            sorted(p.name for p in cache_dir.iterdir()), ["id1_paper.json"]
+        )
+        self.assertEqual(
+            json.loads((cache_dir / "id1_paper.json").read_text(encoding="utf-8")), cached
+        )
+
+    def test_openalex_budget_exhaustion_keeps_badges_and_reports_pending(self):
+        openalex_requests = []
+
+        self.temp_dir, stdout = self.run_main(
+            "id1",
+            {"id1": self.author("id1", 12)},
+            extra_args=("--openalex",),
+            extra_env={"OPENALEX_API_KEY": "test-key"},
+            openalex_requests=openalex_requests,
+        )
+
+        dist = self.temp_dir / "dist"
+        self.assertTrue((dist / "id1" / "citation.json").exists())
+        self.assertTrue((dist / "all.svg").exists())
+        self.assertFalse((dist / "id1" / "openalex").exists())
+        self.assertEqual(len(openalex_requests), 1)
+        self.assertNotIn("api_key", openalex_requests[0][1])
+        self.assertEqual(openalex_requests[0][2], {"Authorization": "Bearer test-key"})
+        self.assertEqual((self.temp_dir / "citation_updated.flag").read_text(), "true")
+        summary = (self.temp_dir / "summary.md").read_text(encoding="utf-8")
+        self.assertIn("| OpenAlex", summary)
+        self.assertIn("budget exhausted", summary.lower())
+        self.assertIn("1 pending", summary)
+
+    def test_openalex_disabled_by_default(self):
+        self.temp_dir, _ = self.run_main("id1", {"id1": self.author("id1", 12)})
+
+        summary = (self.temp_dir / "summary.md").read_text(encoding="utf-8")
+        self.assertNotIn("OpenAlex", summary)
 
     def test_legacy_wos_overwrite_is_not_used(self):
         self.temp_dir, _ = self.run_main(

@@ -53,9 +53,10 @@ jobs:
         env:
           SCHOLAR: ${{ secrets.SCHOLAR }}
           PEER_REVIEW: ${{ secrets.PEER_REVIEW }}
+          OPENALEX_API_KEY: ${{ secrets.OPENALEX_API_KEY }}
         run: |
           : "${SCHOLAR:?SCHOLAR secret is required}"
-          python -u main.py --scholar="${SCHOLAR}" --timeout 180 --gen_summary
+          python -u main.py --scholar="${SCHOLAR}" --timeout 180 --gen_summary --openalex
 
       - name: Check if citation data was updated
         id: check_update

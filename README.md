@@ -44,6 +44,7 @@ Reviews badge: <img src="https://cite.controlnet.space/review.svg">
    - `PEER_REVIEW`: Your peer review count (optional)
    - `DEPLOY_TOKEN`: Used with `DEPLOY_TARGET` to trigger another repository's deployment workflow after citation data updates (optional)
    - `DEPLOY_TARGET`: Target workflow in `owner/repo@ref:workflow_id` format, such as `yourusername/your-site@main:deploy.yml` (optional)
+   - `OPENALEX_API_KEY`: Free [OpenAlex](https://openalex.org/settings/api) API key for publication metadata enrichment (optional, recommended)
 3. **Enable GitHub Pages** to use the `dist` branch
 
 ## Self-hosted Docker runtime
@@ -115,3 +116,19 @@ Badges update automatically hourly. Embed them in your sites:
 ![Paper Citations](https://yourusername.github.io/citation-badge/<GOOGLE_SCHOLAR_ID>_<PUBLICATION_ID>.svg)
 ![Peer Reviews](https://yourusername.github.io/citation-badge/review.svg)
 ```
+
+### OpenAlex publication metadata
+
+The GitHub Actions workflow also looks up each Google Scholar publication on OpenAlex
+(full author names, publication date, DOI and venue) and caches one file per paper:
+
+```text
+dist/<GOOGLE_SCHOLAR_ID>/openalex/<GOOGLE_SCHOLAR_ID>_<PUBLICATION_ID>.json
+```
+
+A paper with an existing file is not looked up again, except for retries of
+`not_found` papers after 7 days and refreshes of matched papers after 30 days. If the
+daily OpenAlex budget runs out mid-run, finished files are kept, the badges are still
+published, and the remaining papers are fetched on a later run. A `publication_date`
+of `YYYY-01-01` may only mean that OpenAlex knows the year. This enrichment is not
+run by the self-hosted Docker service.

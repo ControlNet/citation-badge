@@ -37,7 +37,7 @@ RUN python -m pip install --no-cache-dir --no-compile -r requirements.txt \
         sphinxcontrib-serializinghtml \
         tomli
 
-COPY main.py ./
+COPY main.py openalex.py ./
 COPY service ./service
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 

@@ -14,6 +14,8 @@ from scholarly import scholarly
 from scholarly._proxy_generator import MaxTriesExceededException
 from scholarly.publication_parser import PublicationParser
 
+from openalex import OpenAlexClient, carry_over_cache, enrich_profiles
+
 
 DIST_DIR = Path("dist")
 STAGING_DIR = DIST_DIR / ".staging"
@@ -267,6 +269,7 @@ def generate_scholar_to_dir(
 
 
 def _promote_profile(staged_profile_dir: Path, profile_dir: Path) -> None:
+    carry_over_cache(profile_dir, staged_profile_dir)
     if profile_dir.exists():
         shutil.rmtree(profile_dir)
     shutil.move(str(staged_profile_dir), str(profile_dir))
@@ -332,6 +335,46 @@ def _select_profile_peer_review(
     return current_peer_review
 
 
+def _enrich_with_openalex(scholar_ids: list[str]) -> dict:
+    profile_dirs = [
+        DIST_DIR / scholar_id
+        for scholar_id in scholar_ids
+        if _has_successful_google_scholar(DIST_DIR / scholar_id / "citation.json")
+    ]
+    client = OpenAlexClient(requests.get, api_key=_get_env_str("OPENALEX_API_KEY"))
+    try:
+        summary = enrich_profiles(profile_dirs, client)
+    except Exception as e:
+        print(f"An unexpected error occurred during OpenAlex enrichment: {e}", flush=True)
+        traceback.print_exc()
+        return {"status": "failed", "reason": f"Unexpected error: {e}"}
+    print(f"OpenAlex enrichment: {summary}", flush=True)
+    return summary
+
+
+def _openalex_summary_row(openalex_status: dict) -> str:
+    status = openalex_status["status"]
+    if status == "complete":
+        icon = "✅ Complete"
+    elif status == "failed":
+        icon = "❌ Failed"
+    elif status == "budget_exhausted":
+        icon = "⚠️ Budget exhausted"
+    else:
+        icon = "⚠️ Partial"
+    if status == "failed":
+        details = openalex_status["reason"]
+    else:
+        details = (
+            f"{openalex_status['matched']} matched, {openalex_status['not_found']} not found, "
+            f"{openalex_status['reused']} reused, {openalex_status['errors']} errors, "
+            f"{openalex_status['pending']} pending"
+        )
+        if openalex_status["reason"]:
+            details += f" ({openalex_status['reason']})"
+    return f"| OpenAlex        | {icon:<8}| {details:<32} |\n"
+
+
 def _save_update_flag(updated: bool) -> None:
     with open("citation_updated.flag", "w") as f:
         f.write("true" if updated else "false")
@@ -341,6 +384,7 @@ def _write_summary(
     profile_statuses: list[dict],
     peer_review_status: dict,
     include_peer_review: bool,
+    openalex_status: dict | None = None,
 ) -> None:
     summary_content = """
 # Citation Badge Generation
@@ -374,6 +418,9 @@ def _write_summary(
             f"{peer_review_status['reason']:<32} |\n"
         )
 
+    if openalex_status is not None:
+        summary_content += _openalex_summary_row(openalex_status)
+
     with open("summary.md", "w", encoding="utf-8") as f:
         f.write(summary_content)
     print("Summary written to summary.md", flush=True)
@@ -390,6 +437,11 @@ def main() -> None:
     )
     parser.add_argument(
         "--gen_summary", action="store_true", help="Generate summary for github actions"
+    )
+    parser.add_argument(
+        "--openalex",
+        action="store_true",
+        help="Enrich publications with OpenAlex metadata cached per paper",
     )
     args = parser.parse_args()
     if args.timeout <= 0:
@@ -485,6 +537,8 @@ def main() -> None:
     else:
         print("No root citation metadata update - preserving existing citation.json", flush=True)
 
+    openalex_status = _enrich_with_openalex(scholar_ids) if args.openalex else None
+
     if STAGING_DIR.exists():
         shutil.rmtree(STAGING_DIR)
 
@@ -497,6 +551,7 @@ def main() -> None:
             profile_statuses,
             peer_review_status,
             peer_review_raw is not None,
+            openalex_status,
         )
 
 
