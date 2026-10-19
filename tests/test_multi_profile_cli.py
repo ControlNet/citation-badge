@@ -33,7 +33,12 @@ class MultiProfileCliTest(unittest.TestCase):
         old_env = os.environ.copy()
         old_modules = {
             name: sys.modules.get(name)
-            for name in ["requests", "scholarly", "scholarly._proxy_generator"]
+            for name in [
+                "requests",
+                "scholarly",
+                "scholarly._proxy_generator",
+                "scholarly.publication_parser",
+            ]
         }
 
         class FakeMaxTriesExceededException(Exception):
@@ -55,6 +60,10 @@ class MultiProfileCliTest(unittest.TestCase):
                 if sortby != "year":
                     raise AssertionError(f"Expected sortby='year', got {sortby!r}")
 
+        class FakePublicationParser:
+            def _citation_pub(self, data, publication):
+                return publication
+
         class FakeResponse:
             def __init__(self, url):
                 self.content = f"badge:{url}".encode("utf-8")
@@ -68,6 +77,9 @@ class MultiProfileCliTest(unittest.TestCase):
         sys.modules["requests"] = fake_requests
         sys.modules["scholarly"] = fake_scholarly_module
         sys.modules["scholarly._proxy_generator"] = fake_proxy_module
+        sys.modules["scholarly.publication_parser"] = types.SimpleNamespace(
+            PublicationParser=FakePublicationParser
+        )
 
         os.chdir(temp_dir)
         sys.argv = [
@@ -123,6 +135,7 @@ class MultiProfileCliTest(unittest.TestCase):
                         "title": f"Paper {scholar_id}",
                         "pub_year": "2026",
                         "citation": "Example Journal 12 (3), 45-67, 2026",
+                        "author_line": "A Author, B Author, ...",
                     },
                 }
             ],
@@ -157,6 +170,10 @@ class MultiProfileCliTest(unittest.TestCase):
         self.assertEqual(
             root_data["google_scholar"]["publications"][0]["venue"],
             "Example Journal 12 (3), 45-67, 2026",
+        )
+        self.assertEqual(
+            root_data["google_scholar"]["publications"][0]["authors"],
+            "A Author, B Author, ...",
         )
         self.assertEqual(root_data["web_of_science"]["peer_reviews"], 7)
         self.assertEqual(root_data["web_of_science"]["status"], "success")

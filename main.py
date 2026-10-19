@@ -1,4 +1,5 @@
 import argparse
+import functools
 import hashlib
 import json
 import multiprocessing
@@ -11,6 +12,7 @@ from pathlib import Path
 import requests
 from scholarly import scholarly
 from scholarly._proxy_generator import MaxTriesExceededException
+from scholarly.publication_parser import PublicationParser
 
 
 DIST_DIR = Path("dist")
@@ -19,6 +21,22 @@ STAGING_DIR = DIST_DIR / ".staging"
 
 class ScholarProfileTimeout(TimeoutError):
     pass
+
+
+def _keep_author_line(citation_pub):
+    # scholarly keeps only the second gray line (venue) of a profile row and
+    # drops the first one, which holds the (possibly truncated) author list.
+    @functools.wraps(citation_pub)
+    def wrapper(self, data, publication):
+        publication = citation_pub(self, data, publication)
+        gray_lines = data.find_all("div", class_="gs_gray")
+        publication["bib"]["author_line"] = gray_lines[0].text if gray_lines else ""
+        return publication
+
+    return wrapper
+
+
+PublicationParser._citation_pub = _keep_author_line(PublicationParser._citation_pub)
 
 
 def _get_env_str(name: str) -> str | None:
@@ -200,6 +218,7 @@ def generate_scholar_to_dir(
                     "author_pub_id": pub.get("author_pub_id", ""),
                     "title": pub.get("bib", {}).get("title", ""),
                     "year": pub.get("bib", {}).get("pub_year", ""),
+                    "authors": pub.get("bib", {}).get("author_line", ""),
                     "venue": pub.get("bib", {}).get("citation", ""),
                     "citations": pub_cite,
                 }
