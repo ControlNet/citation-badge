@@ -1,0 +1,18 @@
+{
+  "status": "matched",
+  "author_pub_id": "-rpiDIoAAAAJ:9ZlFYXVOiuMC",
+  "scholar_title": "Multimodal Deepfake Generation and Detection: Challenges, Methods, and Future Directions",
+  "fetched_at": "2026-10-19T09:40:15.247969+00:00",
+  "openalex_id": "https://openalex.org/W4415065185",
+  "doi": "https://doi.org/10.1145/3747327.3762826",
+  "title": "Multimodal Deepfake Generation and Detection: Challenges, Methods, and Future Directions",
+  "publication_date": "2025-10-11",
+  "publication_year": 2025,
+  "authors": [
+    "Abhinav Dhall",
+    "Zhixi Cai",
+    "Shreya Ghosh"
+  ],
+  "venue": null,
+  "type": "conference-paper"
+}

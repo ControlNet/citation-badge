@@ -1,0 +1,32 @@
+{
+  "status": "matched",
+  "author_pub_id": "-rpiDIoAAAAJ:roLk4NBRz8UC",
+  "scholar_title": "NEUSIS: A Compositional Neuro-Symbolic Framework for Autonomous Perception, Reasoning, and Planning in Complex UAV Search Missions",
+  "fetched_at": "2026-10-19T09:40:15.247969+00:00",
+  "openalex_id": "https://openalex.org/W4412605375",
+  "doi": "https://doi.org/10.1109/lra.2025.3592098",
+  "title": "NEUSIS: A Compositional Neuro-Symbolic Framework for Autonomous Perception, Reasoning, and Planning in Complex UAV Search Missions",
+  "publication_date": "2025-07-23",
+  "publication_year": 2025,
+  "authors": [
+    "Zhixi Cai",
+    "C. Cárdenas",
+    "Kevin Leo",
+    "Chenyuan Zhang",
+    "Kal Backman",
+    "Hanbing Li",
+    "Boying Li",
+    "Mahsa Ghorbanali",
+    "Stavya Datta",
+    "Lizhen Qu",
+    "Julián Gutiérrez",
+    "Alexey Ignatiev",
+    "Yuan-Fang Li",
+    "Mor Vered",
+    "Peter J. Stuckey",
+    "María García de la Banda",
+    "Hamid Rezatofighi"
+  ],
+  "venue": "IEEE Robotics and Automation Letters",
+  "type": "article"
+}

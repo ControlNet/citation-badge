@@ -1,0 +1,22 @@
+{
+  "status": "matched",
+  "author_pub_id": "-rpiDIoAAAAJ:qUcmZB5y_30C",
+  "scholar_title": "What We Talk About When We Talk About LLM Planning: Evidence for Two Distinct Planning Abilities",
+  "fetched_at": "2026-10-19T09:40:15.247969+00:00",
+  "openalex_id": "https://openalex.org/W7168241717",
+  "doi": "https://doi.org/10.48550/arxiv.2607.11197",
+  "title": "What We Talk About When We Talk About LLM Planning: Evidence for Two Distinct Planning Abilities",
+  "publication_date": "2026-07-13",
+  "publication_year": 2026,
+  "authors": [
+    "Sukai Huang",
+    "Chenyuan Zhang",
+    "Fucai Ke",
+    "Zhixi Cai",
+    "Mohammad Naim Rastgoo",
+    "Gholamreza Haffari",
+    "Hamid Rezatofighi"
+  ],
+  "venue": "arXiv (Cornell University)",
+  "type": "preprint"
+}

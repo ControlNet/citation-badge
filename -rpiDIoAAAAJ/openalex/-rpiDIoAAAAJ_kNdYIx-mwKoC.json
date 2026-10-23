@@ -1,0 +1,22 @@
+{
+  "status": "matched",
+  "author_pub_id": "-rpiDIoAAAAJ:kNdYIx-mwKoC",
+  "scholar_title": "NAVER: A Neuro-Symbolic Compositional Automaton for Visual Grounding with Explicit Logic Reasoning",
+  "fetched_at": "2026-10-19T09:40:15.247969+00:00",
+  "openalex_id": "https://openalex.org/W4407123469",
+  "doi": "https://doi.org/10.1109/iccv51701.2025.02232",
+  "title": "Naver: a Neuro-Symbolic Compositional Automaton for Visual Grounding with Explicit Logic Reasoning",
+  "publication_date": "2025-10-19",
+  "publication_year": 2025,
+  "authors": [
+    "Zhixi Cai",
+    "Fucai Ke",
+    "Simindokht Jahangard",
+    "María García de la Banda",
+    "Reza Haffari",
+    "Peter J. Stuckey",
+    "Hamid Rezatofighi"
+  ],
+  "venue": "IEEE/CVF International Conference on Computer Vision (ICCV)",
+  "type": "conference-paper"
+}
