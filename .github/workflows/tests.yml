@@ -1,0 +1,25 @@
+name: Unit tests
+
+on:
+  push:
+    branches: [master, main]
+    paths: ['**.py', 'requirements.txt', '.github/workflows/tests.yml', '.github/workflows/build.yml']
+  pull_request:
+    paths: ['**.py', 'requirements.txt', '.github/workflows/tests.yml', '.github/workflows/build.yml']
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.10'
+          cache: pip
+      - run: pip install -r requirements.txt
+      - run: python -m unittest discover -s tests -v
