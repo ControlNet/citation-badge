@@ -160,6 +160,51 @@ class MultiProfileCliTest(unittest.TestCase):
             ],
         }
 
+    def test_downstream_fingerprint_uses_actual_generated_feed_schema(self):
+        from profile_deploy import STATE_FILE, acknowledge, needs_deployment
+
+        target = "example/homepage@master:deploy.yml"
+        first = self.author("id1", 100)
+        second = self.author("id2", 50)
+        self.temp_dir, _ = self.run_main(
+            "id1,id2", {"id1": first, "id2": second}, peer_review=12,
+        )
+        dist = self.temp_dir / "dist"
+        changed, fingerprint = needs_deployment(dist, target)
+        self.assertTrue(changed)
+        assert fingerprint is not None
+        acknowledge(dist, target, fingerprint)
+        receipt = (dist / STATE_FILE).read_bytes()
+
+        second["citedby"] += 1
+        second["publications"][0]["num_citations"] += 1
+        self.run_main(
+            "id1,id2", {"id1": first, "id2": second}, peer_review=13,
+            workdir=self.temp_dir,
+        )
+        self.assertEqual((self.temp_dir / "citation_updated.flag").read_text(), "true")
+        self.assertEqual(needs_deployment(dist, target), (False, fingerprint))
+        self.assertEqual((dist / STATE_FILE).read_bytes(), receipt)
+
+        first["publications"][0]["num_citations"] -= 1
+        self.run_main("id1,id2", {"id1": first, "id2": second}, workdir=self.temp_dir)
+        self.assertTrue(needs_deployment(dist, target)[0])
+
+    def test_scrape_failure_preserves_downstream_receipt_and_root_semantics(self):
+        from profile_deploy import STATE_FILE, acknowledge, needs_deployment
+
+        target = "example/homepage@master:deploy.yml"
+        self.temp_dir, _ = self.run_main("id1", {"id1": self.author("id1", 100)})
+        dist = self.temp_dir / "dist"
+        _, fingerprint = needs_deployment(dist, target)
+        assert fingerprint is not None
+        acknowledge(dist, target, fingerprint)
+        receipt = (dist / STATE_FILE).read_bytes()
+        self.run_main("id1", {"id1": RuntimeError("fixture scrape failure")}, workdir=self.temp_dir)
+        self.assertEqual((self.temp_dir / "citation_updated.flag").read_text(), "false")
+        self.assertEqual(needs_deployment(dist, target), (False, fingerprint))
+        self.assertEqual((dist / STATE_FILE).read_bytes(), receipt)
+
     def test_multi_profile_success_writes_profiles_and_first_profile_root_mirror(self):
         self.temp_dir, _ = self.run_main(
             " id1, id2,,id1 ",

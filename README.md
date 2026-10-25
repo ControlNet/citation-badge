@@ -117,6 +117,28 @@ Badges update automatically hourly. Embed them in your sites:
 ![Peer Reviews](https://yourusername.github.io/citation-badge/review.svg)
 ```
 
+### Downstream homepage deployments
+
+Feed publication and homepage deployment use separate change checks. All changed
+feed files (including timestamps, supplemental Scholar profiles and OpenAlex
+caches) continue to be published to `dist`. `profile_deploy.py` only requests a
+homepage deployment when the root profile's citation semantics change: Scholar
+status, total citations, total h/i10 indexes, or the publication-ID/citation-count
+mapping. Ordering, publication metadata, peer-review metadata and `generated_at`
+do not invalidate that citation-only homepage snapshot.
+
+The last accepted fingerprint is stored as `.profile-deploy-state.json` on the
+`dist` branch, scoped to a hash of `DEPLOY_TARGET`. Missing/corrupt receipts and
+changed targets force one refresh. Genuine increases, decreases, additions and
+removals are retained. Failed scrapes keep the last successful feed as before.
+The feed is pushed before requesting deployment; the receipt is committed only
+after the dispatch API succeeds. A failed dispatch or receipt push therefore
+retries on the next run, even if the raw feed has not changed. A receipt records
+API acceptance, not successful completion of the downstream workflow.
+
+Run the offline regression suite with `python -m unittest discover -s tests -v`.
+PR tests use read-only permissions and never publish feeds or dispatch deployments.
+
 ### OpenAlex publication metadata
 
 The GitHub Actions workflow also looks up each Google Scholar publication on OpenAlex
