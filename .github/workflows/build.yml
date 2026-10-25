@@ -16,6 +16,7 @@ concurrency:
 
 permissions:
   contents: write
+  pages: read # Preserve the custom-domain lookup before publishing dist.
 
 jobs:
   build:
