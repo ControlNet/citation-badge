@@ -1,0 +1,583 @@
+{
+  "generated_at": "2026-10-31T13:19:06.027310",
+  "google_scholar": {
+    "status": "success",
+    "total_citations": 994,
+    "5y_citations": 993,
+    "total_hindex": 13,
+    "5y_hindex": 13,
+    "total_i10index": 14,
+    "5y_i10index": 14,
+    "cites_per_year": {
+      "2023": 31,
+      "2024": 168,
+      "2025": 331,
+      "2026": 459
+    },
+    "publications": [
+      {
+        "author_pub_id": "-rpiDIoAAAAJ:hC7cP41nSMkC",
+        "title": "JRDB-AVR: An Active Visual Reasoning Benchmark for Embodied Agents in Real-World Environments",
+        "year": "2026",
+        "authors": "Z Cai, F Ke, S Huang, M Garcia de la Banda, PJ Stuckey, G Haffari, ...",
+        "venue": "arXiv preprint arXiv:2609.35032, 2026",
+        "citations": 0,
+        "openalex": {
+          "id": "https://openalex.org/W7214740201",
+          "doi": "https://doi.org/10.48550/arxiv.2609.35032",
+          "publication_date": "2026-09-28",
+          "authors": [
+            "Zhixi Cai",
+            "Fucai Ke",
+            "Sukai Huang",
+            "María García de la Banda",
+            "Peter J. Stuckey",
+            "Gholamreza Haffari",
+            "Hamid Rezatofighi"
+          ],
+          "venue": "arXiv (Cornell University)"
+        }
+      },
+      {
+        "author_pub_id": "-rpiDIoAAAAJ:ZeXyd9-uunAC",
+        "title": "VIEW2SPACE: Studying Multi-View Visual Reasoning from Sparse Observations",
+        "year": "2026",
+        "authors": "F Ke, Z Cai, B Li, L Chen, B Lin, W Wang, PD Haghighi, G Haffari, ...",
+        "venue": "European Conference on Computer Vision, 520-538, 2026",
+        "citations": 9,
+        "openalex": {
+          "id": "https://openalex.org/W7138913573",
+          "doi": "https://doi.org/10.1007/978-3-032-37531-5_29",
+          "publication_date": "2026-01-01",
+          "authors": [
+            "Fucai Ke",
+            "Zhixi Cai",
+            "Boying Li",
+            "Long Chen",
+            "Beibei Lin",
+            "Weiqing Wang",
+            "Pari Delir Haghighi",
+            "Gholamreza Haffari",
+            "Hamid Rezatofighi"
+          ],
+          "venue": "Lecture notes in computer science"
+        }
+      },
+      {
+        "author_pub_id": "-rpiDIoAAAAJ:qUcmZB5y_30C",
+        "title": "What We Talk About When We Talk About LLM Planning: Evidence for Two Distinct Planning Abilities",
+        "year": "2026",
+        "authors": "S Huang, C Zhang, F Ke, Z Cai, N Rastgoo, G Haffari, H Rezatofighi",
+        "venue": "arXiv preprint arXiv:2607.11197, 2026",
+        "citations": 0,
+        "openalex": {
+          "id": "https://openalex.org/W7168241717",
+          "doi": "https://doi.org/10.48550/arxiv.2607.11197",
+          "publication_date": "2026-07-13",
+          "authors": [
+            "Sukai Huang",
+            "Chenyuan Zhang",
+            "Fucai Ke",
+            "Zhixi Cai",
+            "Mohammad Naim Rastgoo",
+            "Gholamreza Haffari",
+            "Hamid Rezatofighi"
+          ],
+          "venue": "arXiv (Cornell University)"
+        }
+      },
+      {
+        "author_pub_id": "-rpiDIoAAAAJ:IWHjjKOFINEC",
+        "title": "Mini-BEHAVIOR-Gran: Revealing U-Shaped Effects of Instruction Granularity on Language-Guided Embodied Agents",
+        "year": "2026",
+        "authors": "S Huang, C Zhang, F Ke, Z Cai, G Haffari, L Qu, H Rezatofighi",
+        "venue": "arXiv preprint arXiv:2604.17019, 2026",
+        "citations": 2,
+        "openalex": {
+          "id": "https://openalex.org/W7155074923",
+          "doi": "https://doi.org/10.48550/arxiv.2604.17019",
+          "publication_date": "2026-04-18",
+          "authors": [
+            "Sukai Huang",
+            "Chenyuan Zhang",
+            "Fucai Ke",
+            "Zhixi Cai",
+            "Gholamreza Haffari",
+            "Lizhen Qu",
+            "Hamid Rezatofighi"
+          ],
+          "venue": "arXiv (Cornell University)"
+        }
+      },
+      {
+        "author_pub_id": "-rpiDIoAAAAJ:qxL8FJ1GzNcC",
+        "title": "JRDB-Reasoning: A Difficulty-Graded Benchmark for Visual Reasoning in Robotics",
+        "year": "2026",
+        "authors": "S Jahangard, M Mohammadi, Y Shen, Z Cai, H Rezatofighi",
+        "venue": "Proceedings of the AAAI Conference on Artificial Intelligence 40 (7), 5276-5286, 2026",
+        "citations": 2,
+        "openalex": {
+          "id": "https://openalex.org/W7138233761",
+          "doi": "https://doi.org/10.1609/aaai.v40i7.37443",
+          "publication_date": "2026-03-14",
+          "authors": [
+            "Simindokht Jahangard",
+            "Mehrzad Mohammadi",
+            "Yi Shen",
+            "Zhixi Cai",
+            "Hamid Rezatofighi"
+          ],
+          "venue": "Proceedings of the AAAI Conference on Artificial Intelligence"
+        }
+      },
+      {
+        "author_pub_id": "-rpiDIoAAAAJ:dhFuZR0502QC",
+        "title": "MATA: A Trainable Hierarchical Automaton System for Multi-Agent Visual Reasoning",
+        "year": "2026",
+        "authors": "Z Cai, F Ke, K Leo, S Huang, M Garcia de la Banda, PJ Stuckey, ...",
+        "venue": "The Fourteenth International Conference on Learning Representations, 2026",
+        "citations": 4,
+        "openalex": {
+          "id": "https://openalex.org/W7125961535",
+          "doi": "https://doi.org/10.48550/arxiv.2601.19204",
+          "publication_date": "2026-01-27",
+          "authors": [
+            "Zhixi Cai",
+            "Fucai Ke",
+            "Kevin Leo",
+            "Sukai Huang",
+            "María García de la Banda",
+            "Peter J. Stuckey",
+            "Hamid Rezatofighi"
+          ],
+          "venue": "arXiv (Cornell University)"
+        }
+      },
+      {
+        "author_pub_id": "-rpiDIoAAAAJ:QIV2ME_5wuYC",
+        "title": "MRAC 2025: 3rd International Workshop on Multimodal, Generative and Responsible Affective Computing",
+        "year": "2025",
+        "authors": "Z Lian, S Ghosh, E Cambria, Z Cai, G Zhao, A Dhall, BW Schuller, ...",
+        "venue": "Proceedings of the 33rd ACM International Conference on Multimedia, 14314-14316, 2025",
+        "citations": 0,
+        "openalex": {
+          "id": "https://openalex.org/W4415536838",
+          "doi": "https://doi.org/10.1145/3746027.3762108",
+          "publication_date": "2025-10-25",
+          "authors": [
+            "Zheng Lian",
+            "Shreya Ghosh",
+            "Erik Cambria",
+            "Zhixi Cai",
+            "Guoying Zhao",
+            "Abhinav Dhall",
+            "Björn Wolfgang Schuller",
+            "Roland Goecke",
+            "Jianhua Tao",
+            "Tom Gedeon"
+          ],
+          "venue": "ACM International Conference on Multimedia (ACM MM)"
+        }
+      },
+      {
+        "author_pub_id": "-rpiDIoAAAAJ:M3ejUd6NZC8C",
+        "title": "AV-Deepfake1M++: A Large-Scale Audio-Visual Deepfake Benchmark with Real-World Perturbations",
+        "year": "2025",
+        "authors": "Z Cai, K Kuckreja, S Ghosh, A Chuchra, MH Khan, U Tariq, T Gedeon, ...",
+        "venue": "Proceedings of the 33rd ACM International Conference on Multimedia, 13686--13691, 2025",
+        "citations": 21,
+        "openalex": {
+          "id": "https://openalex.org/W4415539823",
+          "doi": "https://doi.org/10.1145/3746027.3761979",
+          "publication_date": "2025-10-25",
+          "authors": [
+            "Zhixi Cai",
+            "Kartik Kuckreja",
+            "Shreya Ghosh",
+            "Akanksha Chuchra",
+            "Muhammad Haris Khan",
+            "Usman Tariq",
+            "Tom Gedeon",
+            "Abhinav Dhall"
+          ],
+          "venue": "ACM International Conference on Multimedia (ACM MM)"
+        }
+      },
+      {
+        "author_pub_id": "-rpiDIoAAAAJ:9ZlFYXVOiuMC",
+        "title": "Multimodal Deepfake Generation and Detection: Challenges, Methods, and Future Directions",
+        "year": "2025",
+        "authors": "A Dhall, Z Cai, S Ghosh",
+        "venue": "Companion Proceedings of the 27th International Conference on Multimodal …, 2025",
+        "citations": 2,
+        "openalex": {
+          "id": "https://openalex.org/W4415065185",
+          "doi": "https://doi.org/10.1145/3747327.3762826",
+          "publication_date": "2025-10-11",
+          "authors": [
+            "Abhinav Dhall",
+            "Zhixi Cai",
+            "Shreya Ghosh"
+          ],
+          "venue": null
+        }
+      },
+      {
+        "author_pub_id": "-rpiDIoAAAAJ:KlAtU1dfN6UC",
+        "title": "DWIM: Towards Tool-aware Visual Reasoning via Discrepancy-aware Workflow Generation & Instruct-Masking Tuning",
+        "year": "2025",
+        "authors": "F Ke, V Kumar B G, X Leng, Z Cai, Z Khan, W Wang, PD Haghighi, ...",
+        "venue": "Proceedings of the IEEE/CVF International Conference on Computer Vision …, 2025",
+        "citations": 13,
+        "openalex": {
+          "id": "https://openalex.org/W7160083573",
+          "doi": "https://doi.org/10.1109/iccv51701.2025.00323",
+          "publication_date": "2025-10-19",
+          "authors": [
+            "Fucai Ke",
+            "Vijay Kumar B G",
+            "Xingjian Leng",
+            "Zhixi Cai",
+            "Zaid Khan",
+            "Weiqing Wang",
+            "Pari Delir Haghighi",
+            "Hamid Rezatofighi",
+            "Manmohan Krishna Chandraker"
+          ],
+          "venue": "IEEE/CVF International Conference on Computer Vision (ICCV)"
+        }
+      },
+      {
+        "author_pub_id": "-rpiDIoAAAAJ:kNdYIx-mwKoC",
+        "title": "NAVER: A Neuro-Symbolic Compositional Automaton for Visual Grounding with Explicit Logic Reasoning",
+        "year": "2025",
+        "authors": "Z Cai, F Ke, S Jahangard, M Garcia de la Banda, R Haffari, PJ Stuckey, ...",
+        "venue": "Proceedings of the IEEE/CVF International Conference on Computer Vision …, 2025",
+        "citations": 17,
+        "openalex": {
+          "id": "https://openalex.org/W4407123469",
+          "doi": "https://doi.org/10.1109/iccv51701.2025.02232",
+          "publication_date": "2025-10-19",
+          "authors": [
+            "Zhixi Cai",
+            "Fucai Ke",
+            "Simindokht Jahangard",
+            "María García de la Banda",
+            "Reza Haffari",
+            "Peter J. Stuckey",
+            "Hamid Rezatofighi"
+          ],
+          "venue": "IEEE/CVF International Conference on Computer Vision (ICCV)"
+        }
+      },
+      {
+        "author_pub_id": "-rpiDIoAAAAJ:aqlVkmm33-oC",
+        "title": "Explain Before You Answer: A Survey on Compositional Visual Reasoning",
+        "year": "2025",
+        "authors": "F Ke, J Hsu, Z Cai, Z Ma, X Zheng, X Wu, S Huang, W Wang, PD Haghighi, ...",
+        "venue": "arXiv preprint arXiv:2508.17298, 2025",
+        "citations": 38,
+        "openalex": null
+      },
+      {
+        "author_pub_id": "-rpiDIoAAAAJ:roLk4NBRz8UC",
+        "title": "NEUSIS: A Compositional Neuro-Symbolic Framework for Autonomous Perception, Reasoning, and Planning in Complex UAV Search Missions",
+        "year": "2025",
+        "authors": "Z Cai*, CR Cardenas*, K Leo*, C Zhang*, K Backman*, H Li*, B Li, ...",
+        "venue": "IEEE Robotics and Automation Letters 10 (9), 9502-9509, 2025",
+        "citations": 26,
+        "openalex": {
+          "id": "https://openalex.org/W4412605375",
+          "doi": "https://doi.org/10.1109/lra.2025.3592098",
+          "publication_date": "2025-07-23",
+          "authors": [
+            "Zhixi Cai",
+            "C. Cárdenas",
+            "Kevin Leo",
+            "Chenyuan Zhang",
+            "Kal Backman",
+            "Hanbing Li",
+            "Boying Li",
+            "Mahsa Ghorbanali",
+            "Stavya Datta",
+            "Lizhen Qu",
+            "Julián Gutiérrez",
+            "Alexey Ignatiev",
+            "Yuan-Fang Li",
+            "Mor Vered",
+            "Peter J. Stuckey",
+            "María García de la Banda",
+            "Hamid Rezatofighi"
+          ],
+          "venue": "IEEE Robotics and Automation Letters"
+        }
+      },
+      {
+        "author_pub_id": "-rpiDIoAAAAJ:Se3iqnhoufwC",
+        "title": "Hier-SLAM: Scaling-up Semantics in SLAM with a Hierarchically Categorical Gaussian Splatting",
+        "year": "2025",
+        "authors": "B Li, Z Cai, YF Li, I Reid, H Rezatofighi",
+        "venue": "IEEE International Conference on Robotics and Automation (ICRA), 9748-9754, 2025",
+        "citations": 32,
+        "openalex": {
+          "id": "https://openalex.org/W4413925399",
+          "doi": "https://doi.org/10.1109/icra55743.2025.11127775",
+          "publication_date": "2025-05-19",
+          "authors": [
+            "Boying Li",
+            "Zhixi Cai",
+            "Yuan-Fang Li",
+            "Ian D. Reid",
+            "Hamid Rezatofighi"
+          ],
+          "venue": "Proceedings - IEEE International Conference on Robotics and Automation/Proceedings"
+        }
+      },
+      {
+        "author_pub_id": "-rpiDIoAAAAJ:4DMP91E08xMC",
+        "title": "MRAC'24 Chairs' Welcome",
+        "year": "2024",
+        "authors": "J Tao, S Ghosh, Z Lian, Z Cai, BW Schuller, A Dhall, G Zhao, D Kollias, ...",
+        "venue": "Proceedings of the 2nd International Workshop on Multimodal and Responsible …, 2024",
+        "citations": 0,
+        "openalex": null
+      },
+      {
+        "author_pub_id": "-rpiDIoAAAAJ:8k81kl-MbHgC",
+        "title": "1M-Deepfakes Detection Challenge",
+        "year": "2024",
+        "authors": "Z Cai, A Dhall, S Ghosh, M Hayat, D Kollias, K Stefanov, U Tariq",
+        "venue": "Proceedings of the 32nd ACM International Conference on Multimedia, 11355-11359, 2024",
+        "citations": 27,
+        "openalex": {
+          "id": "https://openalex.org/W4403791415",
+          "doi": "https://doi.org/10.1145/3664647.3689145",
+          "publication_date": "2024-10-26",
+          "authors": [
+            "Zhixi Cai",
+            "Abhinav Dhall",
+            "Shreya Ghosh",
+            "Munawar Hayat",
+            "Dimitrios Kollias",
+            "Kalin Stefanov",
+            "Usman Tariq"
+          ],
+          "venue": "ACM International Conference on Multimedia (ACM MM)"
+        }
+      },
+      {
+        "author_pub_id": "-rpiDIoAAAAJ:5nxA0vEk-isC",
+        "title": "AV-Deepfake1M: A large-scale LLM-driven audio-visual deepfake dataset",
+        "year": "2024",
+        "authors": "Z Cai, S Ghosh, AP Adatia, M Hayat, A Dhall, T Gedeon, K Stefanov",
+        "venue": "Proceedings of the 32nd ACM International Conference on Multimedia, 7414-7423, 2024",
+        "citations": 185,
+        "openalex": {
+          "id": "https://openalex.org/W4403791323",
+          "doi": "https://doi.org/10.1145/3664647.3680795",
+          "publication_date": "2024-10-26",
+          "authors": [
+            "Zhixi Cai",
+            "Shreya Ghosh",
+            "Aman Pankaj Adatia",
+            "Munawar Hayat",
+            "Abhinav Dhall",
+            "Tom Gedeon",
+            "Kalin Stefanov"
+          ],
+          "venue": "ACM International Conference on Multimedia (ACM MM)"
+        }
+      },
+      {
+        "author_pub_id": "-rpiDIoAAAAJ:YOwf2qJgpHMC",
+        "title": "Emolysis: A multimodal open-source group emotion analysis and visualization toolkit",
+        "year": "2024",
+        "authors": "S Ghosh*, Z Cai*, P Gupta, G Sharma, A Dhall, M Hayat, T Gedeon",
+        "venue": "2024 12th International Conference on Affective Computing and Intelligent …, 2024",
+        "citations": 7,
+        "openalex": {
+          "id": "https://openalex.org/W4409762288",
+          "doi": "https://doi.org/10.1109/aciiw63320.2024.00023",
+          "publication_date": "2024-09-15",
+          "authors": [
+            "Shreya Ghosh",
+            "Zhixi Cai",
+            "Parul Gupta",
+            "Garima Sharma",
+            "Abhinav Dhall",
+            "Munawar Hayat",
+            "Tom Gedeon"
+          ],
+          "venue": "International Conference on Affective Computing and Intelligent Interaction Workshops and Demos (ACIIW)"
+        }
+      },
+      {
+        "author_pub_id": "-rpiDIoAAAAJ:3fE2CSJIrl8C",
+        "title": "MRAC Track 1: 2nd Workshop on Multimodal, Generative and Responsible Affective Computing",
+        "year": "2024",
+        "authors": "S Ghosh, Z Cai, A Dhall, D Kollias, R Goecke, T Gedeon",
+        "venue": "Proceedings of the 2nd International Workshop on Multimodal and Responsible …, 2024",
+        "citations": 11,
+        "openalex": {
+          "id": "https://openalex.org/W4403713263",
+          "doi": "https://doi.org/10.1145/3689092.3690042",
+          "publication_date": "2024-10-23",
+          "authors": [
+            "Shreya Ghosh",
+            "Zhixi Cai",
+            "Abhinav Dhall",
+            "Dimitrios Kollias",
+            "Roland Goecke",
+            "Tom Gedeon"
+          ],
+          "venue": null
+        }
+      },
+      {
+        "author_pub_id": "-rpiDIoAAAAJ:YsMSGLbcyi4C",
+        "title": "HYDRA: A Hyper Agent for Dynamic Compositional Visual Reasoning",
+        "year": "2024",
+        "authors": "F Ke*, Z Cai*, S Jahangard*, W Wang, PD Haghighi, H Rezatofighi",
+        "venue": "European Conference on Computer Vision, 2024",
+        "citations": 45,
+        "openalex": {
+          "id": "https://openalex.org/W4404725708",
+          "doi": "https://doi.org/10.1007/978-3-031-72661-3_8",
+          "publication_date": "2024-11-26",
+          "authors": [
+            "Fucai Ke",
+            "Zhixi Cai",
+            "Simindokht Jahangard",
+            "Weiqing Wang",
+            "Pari Delir Haghighi",
+            "Hamid Rezatofighi"
+          ],
+          "venue": "Lecture notes in computer science"
+        }
+      },
+      {
+        "author_pub_id": "-rpiDIoAAAAJ:ufrVoPGSRksC",
+        "title": "Content-Driven Multimodal Deepfake Generation and Temporal Localization",
+        "year": "2024",
+        "authors": "Z Cai",
+        "venue": "Monash University, 2024",
+        "citations": 0,
+        "openalex": null
+      },
+      {
+        "author_pub_id": "-rpiDIoAAAAJ:eQOLeE2rZwMC",
+        "title": "JRDB-Social: A Multifaceted Robotic Dataset for Understanding of Context and Dynamics of Human Interactions Within Social Groups",
+        "year": "2024",
+        "authors": "S Jahangard, Z Cai, S Wen, H Rezatofighi",
+        "venue": "Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern …, 2024",
+        "citations": 44,
+        "openalex": {
+          "id": "https://openalex.org/W4402774247",
+          "doi": "https://doi.org/10.1109/cvpr52733.2024.02085",
+          "publication_date": "2024-06-16",
+          "authors": [
+            "Simindokht Jahangard",
+            "Zhixi Cai",
+            "Shiki Wen",
+            "Hamid Rezatofighi"
+          ],
+          "venue": "IEEE Computer Society Conference on Computer Vision and Pattern Recognition/Proceedings - IEEE Computer Society Conference on Computer Vision and Pattern Recognition/Proceedings"
+        }
+      },
+      {
+        "author_pub_id": "-rpiDIoAAAAJ:W7OEmFMy1HYC",
+        "title": "Glitch in the matrix: A large scale benchmark for content driven audio–visual forgery detection and localization",
+        "year": "2023",
+        "authors": "Z Cai, S Ghosh, A Dhall, T Gedeon, K Stefanov, M Hayat",
+        "venue": "Computer Vision and Image Understanding 236, 103818, 2023",
+        "citations": 129,
+        "openalex": {
+          "id": "https://openalex.org/W4386102876",
+          "doi": "https://doi.org/10.1016/j.cviu.2023.103818",
+          "publication_date": "2023-08-23",
+          "authors": [
+            "Zhixi Cai",
+            "Shreya Ghosh",
+            "Abhinav Dhall",
+            "Tom Gedeon",
+            "Kalin Stefanov",
+            "Munawar Hayat"
+          ],
+          "venue": "Computer Vision and Image Understanding"
+        }
+      },
+      {
+        "author_pub_id": "-rpiDIoAAAAJ:UeHWp8X0CEIC",
+        "title": "Pavlok-Nudge: A Feedback Mechanism for Atomic Behaviour Modification with Snoring Usecase",
+        "year": "2023",
+        "authors": "R Hasan, S Ghosh, P Agrawal, Z Cai, S Soon, A Dhall, T Gedeon",
+        "venue": "arXiv preprint arXiv:2305.06110, 2023",
+        "citations": 1,
+        "openalex": {
+          "id": "https://openalex.org/W4376311773",
+          "doi": "https://doi.org/10.48550/arxiv.2305.06110",
+          "publication_date": "2023-05-10",
+          "authors": [
+            "Hasan, Md Rakibul",
+            "Shreya Ghosh",
+            "Pradyumna Agrawal",
+            "Zhixi Cai",
+            "Abhinav Dhall",
+            "Tom Gedeon"
+          ],
+          "venue": "arXiv (Cornell University)"
+        }
+      },
+      {
+        "author_pub_id": "-rpiDIoAAAAJ:u-x6o8ySG0sC",
+        "title": "MARLIN: Masked Autoencoder for Facial Video Representation LearnINg",
+        "year": "2023",
+        "authors": "Z Cai, S Ghosh, K Stefanov, A Dhall, J Cai, H Rezatofighi, R Haffari, ...",
+        "venue": "Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern …, 2023",
+        "citations": 183,
+        "openalex": {
+          "id": "https://openalex.org/W4386076638",
+          "doi": "https://doi.org/10.1109/cvpr52729.2023.00150",
+          "publication_date": "2023-06-01",
+          "authors": [
+            "Zhixi Cai",
+            "Shreya Ghosh",
+            "Kalin Stefanov",
+            "Abhinav Dhall",
+            "Jianfei Cai",
+            "Hamid Rezatofighi",
+            "Reza Haffari",
+            "Munawar Hayat"
+          ],
+          "venue": "IEEE Computer Society Conference on Computer Vision and Pattern Recognition/Proceedings - IEEE Computer Society Conference on Computer Vision and Pattern Recognition/Proceedings"
+        }
+      },
+      {
+        "author_pub_id": "-rpiDIoAAAAJ:zYLM7Y9cAGgC",
+        "title": "Do you really mean that? Content driven audio-visual deepfake dataset and multimodal method for temporal forgery localization",
+        "year": "2022",
+        "authors": "Z Cai, K Stefanov, A Dhall, M Hayat",
+        "venue": "2022 International Conference on Digital Image Computing: Techniques and …, 2022",
+        "citations": 196,
+        "openalex": {
+          "id": "https://openalex.org/W4319978495",
+          "doi": "https://doi.org/10.1109/dicta56598.2022.10034605",
+          "publication_date": "2022-11-30",
+          "authors": [
+            "Zhixi Cai",
+            "Kalin Stefanov",
+            "Abhinav Dhall",
+            "Munawar Hayat"
+          ],
+          "venue": "International Conference on Digital Image Computing: Techniques and Applications (DICTA)"
+        }
+      }
+    ],
+    "error": null
+  },
+  "web_of_science": {
+    "status": "success",
+    "peer_reviews": 134,
+    "error": null
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "status": "matched",
+  "author_pub_id": "-rpiDIoAAAAJ:hC7cP41nSMkC",
+  "scholar_title": "JRDB-AVR: An Active Visual Reasoning Benchmark for Embodied Agents in Real-World Environments",
+  "fetched_at": "2026-10-19T09:40:15.247969+00:00",
+  "openalex_id": "https://openalex.org/W7214740201",
+  "doi": "https://doi.org/10.48550/arxiv.2609.35032",
+  "title": "JRDB-AVR: An Active Visual Reasoning Benchmark for Embodied Agents in Real-World Environments",
+  "publication_date": "2026-09-28",
+  "publication_year": 2026,
+  "authors": [
+    "Zhixi Cai",
+    "Fucai Ke",
+    "Sukai Huang",
+    "María García de la Banda",
+    "Peter J. Stuckey",
+    "Gholamreza Haffari",
+    "Hamid Rezatofighi"
+  ],
+  "venue": "arXiv (Cornell University)",
+  "type": "preprint"
+}

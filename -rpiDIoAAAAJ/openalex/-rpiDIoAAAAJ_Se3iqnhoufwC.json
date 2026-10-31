@@ -1,0 +1,20 @@
+{
+  "status": "matched",
+  "author_pub_id": "-rpiDIoAAAAJ:Se3iqnhoufwC",
+  "scholar_title": "Hier-SLAM: Scaling-up Semantics in SLAM with a Hierarchically Categorical Gaussian Splatting",
+  "fetched_at": "2026-10-19T09:40:15.247969+00:00",
+  "openalex_id": "https://openalex.org/W4413925399",
+  "doi": "https://doi.org/10.1109/icra55743.2025.11127775",
+  "title": "Hier-SLAM: Scaling-Up Semantics in SLAM with a Hierarchically Categorical Gaussian Splatting",
+  "publication_date": "2025-05-19",
+  "publication_year": 2025,
+  "authors": [
+    "Boying Li",
+    "Zhixi Cai",
+    "Yuan-Fang Li",
+    "Ian D. Reid",
+    "Hamid Rezatofighi"
+  ],
+  "venue": "Proceedings - IEEE International Conference on Robotics and Automation/Proceedings",
+  "type": "conference-paper"
+}

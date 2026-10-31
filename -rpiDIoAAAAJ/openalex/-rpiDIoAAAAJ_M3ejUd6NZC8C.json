@@ -1,0 +1,23 @@
+{
+  "status": "matched",
+  "author_pub_id": "-rpiDIoAAAAJ:M3ejUd6NZC8C",
+  "scholar_title": "AV-Deepfake1M++: A Large-Scale Audio-Visual Deepfake Benchmark with Real-World Perturbations",
+  "fetched_at": "2026-10-19T09:40:15.247969+00:00",
+  "openalex_id": "https://openalex.org/W4415539823",
+  "doi": "https://doi.org/10.1145/3746027.3761979",
+  "title": "AV-Deepfake1M++: A Large-Scale Audio-Visual Deepfake Benchmark with Real-World Perturbations",
+  "publication_date": "2025-10-25",
+  "publication_year": 2025,
+  "authors": [
+    "Zhixi Cai",
+    "Kartik Kuckreja",
+    "Shreya Ghosh",
+    "Akanksha Chuchra",
+    "Muhammad Haris Khan",
+    "Usman Tariq",
+    "Tom Gedeon",
+    "Abhinav Dhall"
+  ],
+  "venue": "ACM International Conference on Multimedia (ACM MM)",
+  "type": "conference-paper"
+}

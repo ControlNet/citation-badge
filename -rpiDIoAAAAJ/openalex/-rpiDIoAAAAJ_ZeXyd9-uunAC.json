@@ -1,0 +1,24 @@
+{
+  "status": "matched",
+  "author_pub_id": "-rpiDIoAAAAJ:ZeXyd9-uunAC",
+  "scholar_title": "VIEW2SPACE: Studying Multi-View Visual Reasoning from Sparse Observations",
+  "fetched_at": "2026-10-19T09:40:15.247969+00:00",
+  "openalex_id": "https://openalex.org/W7138913573",
+  "doi": "https://doi.org/10.1007/978-3-032-37531-5_29",
+  "title": "VIEW2SPACE: Studying Multi-view Visual Reasoning from Sparse Observations",
+  "publication_date": "2026-01-01",
+  "publication_year": 2026,
+  "authors": [
+    "Fucai Ke",
+    "Zhixi Cai",
+    "Boying Li",
+    "Long Chen",
+    "Beibei Lin",
+    "Weiqing Wang",
+    "Pari Delir Haghighi",
+    "Gholamreza Haffari",
+    "Hamid Rezatofighi"
+  ],
+  "venue": "Lecture notes in computer science",
+  "type": "conference-paper"
+}
