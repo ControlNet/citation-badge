@@ -1,0 +1,21 @@
+{
+  "status": "matched",
+  "author_pub_id": "-rpiDIoAAAAJ:YsMSGLbcyi4C",
+  "scholar_title": "HYDRA: A Hyper Agent for Dynamic Compositional Visual Reasoning",
+  "fetched_at": "2026-10-19T09:40:15.247969+00:00",
+  "openalex_id": "https://openalex.org/W4404725708",
+  "doi": "https://doi.org/10.1007/978-3-031-72661-3_8",
+  "title": "HYDRA: A Hyper Agent for Dynamic Compositional Visual Reasoning",
+  "publication_date": "2024-11-26",
+  "publication_year": 2024,
+  "authors": [
+    "Fucai Ke",
+    "Zhixi Cai",
+    "Simindokht Jahangard",
+    "Weiqing Wang",
+    "Pari Delir Haghighi",
+    "Hamid Rezatofighi"
+  ],
+  "venue": "Lecture notes in computer science",
+  "type": "conference-paper"
+}

@@ -1,0 +1,20 @@
+{
+  "status": "matched",
+  "author_pub_id": "-rpiDIoAAAAJ:qxL8FJ1GzNcC",
+  "scholar_title": "JRDB-Reasoning: A Difficulty-Graded Benchmark for Visual Reasoning in Robotics",
+  "fetched_at": "2026-10-19T09:40:15.247969+00:00",
+  "openalex_id": "https://openalex.org/W7138233761",
+  "doi": "https://doi.org/10.1609/aaai.v40i7.37443",
+  "title": "JRDB-Reasoning: A Difficulty-Graded Benchmark for Visual Reasoning in Robotics",
+  "publication_date": "2026-03-14",
+  "publication_year": 2026,
+  "authors": [
+    "Simindokht Jahangard",
+    "Mehrzad Mohammadi",
+    "Yi Shen",
+    "Zhixi Cai",
+    "Hamid Rezatofighi"
+  ],
+  "venue": "Proceedings of the AAAI Conference on Artificial Intelligence",
+  "type": "conference-paper"
+}

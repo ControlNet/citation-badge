@@ -1,0 +1,24 @@
+{
+  "status": "matched",
+  "author_pub_id": "-rpiDIoAAAAJ:KlAtU1dfN6UC",
+  "scholar_title": "DWIM: Towards Tool-aware Visual Reasoning via Discrepancy-aware Workflow Generation & Instruct-Masking Tuning",
+  "fetched_at": "2026-10-19T09:40:15.247969+00:00",
+  "openalex_id": "https://openalex.org/W7160083573",
+  "doi": "https://doi.org/10.1109/iccv51701.2025.00323",
+  "title": "DWIM: Towards Tool-Aware Visual Reasoning via Discrepancy-Aware Workflow Generation & Instruct-Masking Tuning",
+  "publication_date": "2025-10-19",
+  "publication_year": 2025,
+  "authors": [
+    "Fucai Ke",
+    "Vijay Kumar B G",
+    "Xingjian Leng",
+    "Zhixi Cai",
+    "Zaid Khan",
+    "Weiqing Wang",
+    "Pari Delir Haghighi",
+    "Hamid Rezatofighi",
+    "Manmohan Krishna Chandraker"
+  ],
+  "venue": "IEEE/CVF International Conference on Computer Vision (ICCV)",
+  "type": "conference-paper"
+}

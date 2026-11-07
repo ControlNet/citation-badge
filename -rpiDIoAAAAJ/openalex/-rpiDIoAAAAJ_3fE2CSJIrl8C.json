@@ -1,0 +1,21 @@
+{
+  "status": "matched",
+  "author_pub_id": "-rpiDIoAAAAJ:3fE2CSJIrl8C",
+  "scholar_title": "MRAC Track 1: 2nd Workshop on Multimodal, Generative and Responsible Affective Computing",
+  "fetched_at": "2026-10-19T09:40:15.247969+00:00",
+  "openalex_id": "https://openalex.org/W4403713263",
+  "doi": "https://doi.org/10.1145/3689092.3690042",
+  "title": "MRAC Track 1: 2nd Workshop on Multimodal, Generative and Responsible Affective Computing",
+  "publication_date": "2024-10-23",
+  "publication_year": 2024,
+  "authors": [
+    "Shreya Ghosh",
+    "Zhixi Cai",
+    "Abhinav Dhall",
+    "Dimitrios Kollias",
+    "Roland Goecke",
+    "Tom Gedeon"
+  ],
+  "venue": null,
+  "type": "conference-paper"
+}

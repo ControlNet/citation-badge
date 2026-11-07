@@ -1,0 +1,21 @@
+{
+  "status": "matched",
+  "author_pub_id": "-rpiDIoAAAAJ:W7OEmFMy1HYC",
+  "scholar_title": "Glitch in the matrix: A large scale benchmark for content driven audio–visual forgery detection and localization",
+  "fetched_at": "2026-10-19T09:40:15.247969+00:00",
+  "openalex_id": "https://openalex.org/W4386102876",
+  "doi": "https://doi.org/10.1016/j.cviu.2023.103818",
+  "title": "Glitch in the matrix: A large scale benchmark for content driven audio–visual forgery detection and localization",
+  "publication_date": "2023-08-23",
+  "publication_year": 2023,
+  "authors": [
+    "Zhixi Cai",
+    "Shreya Ghosh",
+    "Abhinav Dhall",
+    "Tom Gedeon",
+    "Kalin Stefanov",
+    "Munawar Hayat"
+  ],
+  "venue": "Computer Vision and Image Understanding",
+  "type": "article"
+}

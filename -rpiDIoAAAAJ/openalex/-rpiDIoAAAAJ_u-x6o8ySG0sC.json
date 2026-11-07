@@ -1,0 +1,23 @@
+{
+  "status": "matched",
+  "author_pub_id": "-rpiDIoAAAAJ:u-x6o8ySG0sC",
+  "scholar_title": "MARLIN: Masked Autoencoder for Facial Video Representation LearnINg",
+  "fetched_at": "2026-10-19T09:40:15.247969+00:00",
+  "openalex_id": "https://openalex.org/W4386076638",
+  "doi": "https://doi.org/10.1109/cvpr52729.2023.00150",
+  "title": "MARLIN: Masked Autoencoder for facial video Representation LearnINg",
+  "publication_date": "2023-06-01",
+  "publication_year": 2023,
+  "authors": [
+    "Zhixi Cai",
+    "Shreya Ghosh",
+    "Kalin Stefanov",
+    "Abhinav Dhall",
+    "Jianfei Cai",
+    "Hamid Rezatofighi",
+    "Reza Haffari",
+    "Munawar Hayat"
+  ],
+  "venue": "IEEE Computer Society Conference on Computer Vision and Pattern Recognition/Proceedings - IEEE Computer Society Conference on Computer Vision and Pattern Recognition/Proceedings",
+  "type": "conference-paper"
+}

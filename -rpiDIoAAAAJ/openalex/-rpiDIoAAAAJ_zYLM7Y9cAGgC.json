@@ -1,0 +1,19 @@
+{
+  "status": "matched",
+  "author_pub_id": "-rpiDIoAAAAJ:zYLM7Y9cAGgC",
+  "scholar_title": "Do you really mean that? Content driven audio-visual deepfake dataset and multimodal method for temporal forgery localization",
+  "fetched_at": "2026-10-19T09:40:15.247969+00:00",
+  "openalex_id": "https://openalex.org/W4319978495",
+  "doi": "https://doi.org/10.1109/dicta56598.2022.10034605",
+  "title": "Do You Really Mean That? Content Driven Audio-Visual Deepfake Dataset and Multimodal Method for Temporal Forgery Localization",
+  "publication_date": "2022-11-30",
+  "publication_year": 2022,
+  "authors": [
+    "Zhixi Cai",
+    "Kalin Stefanov",
+    "Abhinav Dhall",
+    "Munawar Hayat"
+  ],
+  "venue": "International Conference on Digital Image Computing: Techniques and Applications (DICTA)",
+  "type": "conference-paper"
+}

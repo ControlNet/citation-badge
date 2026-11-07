@@ -1,0 +1,22 @@
+{
+  "status": "matched",
+  "author_pub_id": "-rpiDIoAAAAJ:YOwf2qJgpHMC",
+  "scholar_title": "Emolysis: A multimodal open-source group emotion analysis and visualization toolkit",
+  "fetched_at": "2026-10-19T09:40:15.247969+00:00",
+  "openalex_id": "https://openalex.org/W4409762288",
+  "doi": "https://doi.org/10.1109/aciiw63320.2024.00023",
+  "title": "Emolysis: A Multimodal Open-Source Group Emotion Analysis and Visualization Toolkit",
+  "publication_date": "2024-09-15",
+  "publication_year": 2024,
+  "authors": [
+    "Shreya Ghosh",
+    "Zhixi Cai",
+    "Parul Gupta",
+    "Garima Sharma",
+    "Abhinav Dhall",
+    "Munawar Hayat",
+    "Tom Gedeon"
+  ],
+  "venue": "International Conference on Affective Computing and Intelligent Interaction Workshops and Demos (ACIIW)",
+  "type": "conference-paper"
+}
