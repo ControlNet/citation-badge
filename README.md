@@ -15,7 +15,7 @@
         <img src="https://img.shields.io/github/license/ControlNet/citation-badge?style=flat-square" alt="License">
     </a>
     <a href="https://github.com/ControlNet/citation-badge/actions/workflows/build.yml">
-        <img src="https://github.com/ControlNet/citation-badge/actions/workflows/build.yml/badge.svg?branch=master" alt="Badge generation workflow status">
+        <img src="https://img.shields.io/github/actions/workflow/status/ControlNet/citation-badge/build.yml?branch=master&amp;style=flat-square&amp;logo=githubactions&amp;label=Badges&amp;cacheSeconds=3600" alt="Badge generation workflow status">
     </a>
     <a href="https://github.com/ControlNet/citation-badge/actions/workflows/docker-publish.yml">
         <img src="https://img.shields.io/github/actions/workflow/status/ControlNet/citation-badge/docker-publish.yml?branch=master&amp;style=flat-square&amp;logo=githubactions&amp;label=Docker%20publish" alt="Docker publishing workflow status">
