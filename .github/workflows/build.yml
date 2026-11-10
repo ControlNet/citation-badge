@@ -4,8 +4,9 @@ on:
   push:
     branches: [ master, main ]
   schedule:
-    # run per hour
-    - cron: "0 * * * *"
+    # Run hourly, off minute 0: GitHub delays or drops scheduled runs at the
+    # start of every hour under high load.
+    - cron: "37 * * * *"
   workflow_dispatch:  # Allow manual triggering
 
 # Runs force-push the dist branch, so overlapping runs would overwrite each
