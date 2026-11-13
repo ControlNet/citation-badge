@@ -1,0 +1,22 @@
+{
+  "status": "matched",
+  "author_pub_id": "-rpiDIoAAAAJ:IWHjjKOFINEC",
+  "scholar_title": "Mini-BEHAVIOR-Gran: Revealing U-Shaped Effects of Instruction Granularity on Language-Guided Embodied Agents",
+  "fetched_at": "2026-10-19T09:40:15.247969+00:00",
+  "openalex_id": "https://openalex.org/W7155074923",
+  "doi": "https://doi.org/10.48550/arxiv.2604.17019",
+  "title": "Mini-BEHAVIOR-Gran: Revealing U-Shaped Effects of Instruction Granularity on Language-Guided Embodied Agents",
+  "publication_date": "2026-04-18",
+  "publication_year": 2026,
+  "authors": [
+    "Sukai Huang",
+    "Chenyuan Zhang",
+    "Fucai Ke",
+    "Zhixi Cai",
+    "Gholamreza Haffari",
+    "Lizhen Qu",
+    "Hamid Rezatofighi"
+  ],
+  "venue": "arXiv (Cornell University)",
+  "type": "preprint"
+}

@@ -1,0 +1,22 @@
+{
+  "status": "matched",
+  "author_pub_id": "-rpiDIoAAAAJ:5nxA0vEk-isC",
+  "scholar_title": "AV-Deepfake1M: A large-scale LLM-driven audio-visual deepfake dataset",
+  "fetched_at": "2026-10-19T09:40:15.247969+00:00",
+  "openalex_id": "https://openalex.org/W4403791323",
+  "doi": "https://doi.org/10.1145/3664647.3680795",
+  "title": "AV-Deepfake1M: A Large-Scale LLM-Driven Audio-Visual Deepfake Dataset",
+  "publication_date": "2024-10-26",
+  "publication_year": 2024,
+  "authors": [
+    "Zhixi Cai",
+    "Shreya Ghosh",
+    "Aman Pankaj Adatia",
+    "Munawar Hayat",
+    "Abhinav Dhall",
+    "Tom Gedeon",
+    "Kalin Stefanov"
+  ],
+  "venue": "ACM International Conference on Multimedia (ACM MM)",
+  "type": "conference-paper"
+}

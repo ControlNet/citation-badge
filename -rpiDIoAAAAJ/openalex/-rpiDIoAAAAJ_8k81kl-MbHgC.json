@@ -1,0 +1,22 @@
+{
+  "status": "matched",
+  "author_pub_id": "-rpiDIoAAAAJ:8k81kl-MbHgC",
+  "scholar_title": "1M-Deepfakes Detection Challenge",
+  "fetched_at": "2026-10-19T09:40:15.247969+00:00",
+  "openalex_id": "https://openalex.org/W4403791415",
+  "doi": "https://doi.org/10.1145/3664647.3689145",
+  "title": "1M-Deepfakes Detection Challenge",
+  "publication_date": "2024-10-26",
+  "publication_year": 2024,
+  "authors": [
+    "Zhixi Cai",
+    "Abhinav Dhall",
+    "Shreya Ghosh",
+    "Munawar Hayat",
+    "Dimitrios Kollias",
+    "Kalin Stefanov",
+    "Usman Tariq"
+  ],
+  "venue": "ACM International Conference on Multimedia (ACM MM)",
+  "type": "conference-paper"
+}

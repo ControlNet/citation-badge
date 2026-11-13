@@ -1,0 +1,25 @@
+{
+  "status": "matched",
+  "author_pub_id": "-rpiDIoAAAAJ:hFOr9nPyWt4C",
+  "scholar_title": "MRAC 2026: 4th International Workshop on Multimodal, Generative and Responsible Affective Computing",
+  "fetched_at": "2026-11-10T09:03:26.166078+00:00",
+  "openalex_id": "https://openalex.org/W7225293229",
+  "doi": "https://doi.org/10.1145/3767308.3842131",
+  "title": "MRAC 2026: 4th International Workshop on Multimodal, Generative and Responsible Affective Computing",
+  "publication_date": "2026-11-05",
+  "publication_year": 2026,
+  "authors": [
+    "Zheng Lian",
+    "Shreya Ghosh",
+    "Guoying Zhao",
+    "Zhixi Cai",
+    "Erik Cambria",
+    "Abhinav Dhall",
+    "Björn Wolfgang Schuller",
+    "Roland Goecke",
+    "Tom Gedeon",
+    "Jianhua Tao"
+  ],
+  "venue": "ACM International Conference on Multimedia (ACM MM)",
+  "type": "conference-paper"
+}

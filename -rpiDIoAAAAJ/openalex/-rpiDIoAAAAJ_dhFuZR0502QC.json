@@ -1,0 +1,22 @@
+{
+  "status": "matched",
+  "author_pub_id": "-rpiDIoAAAAJ:dhFuZR0502QC",
+  "scholar_title": "MATA: A Trainable Hierarchical Automaton System for Multi-Agent Visual Reasoning",
+  "fetched_at": "2026-10-19T09:40:15.247969+00:00",
+  "openalex_id": "https://openalex.org/W7125961535",
+  "doi": "https://doi.org/10.48550/arxiv.2601.19204",
+  "title": "MATA: A Trainable Hierarchical Automaton System for Multi-Agent Visual Reasoning",
+  "publication_date": "2026-01-27",
+  "publication_year": 2026,
+  "authors": [
+    "Zhixi Cai",
+    "Fucai Ke",
+    "Kevin Leo",
+    "Sukai Huang",
+    "María García de la Banda",
+    "Peter J. Stuckey",
+    "Hamid Rezatofighi"
+  ],
+  "venue": "arXiv (Cornell University)",
+  "type": "preprint"
+}
