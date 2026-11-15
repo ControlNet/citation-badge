@@ -3,6 +3,14 @@ name: Build
 on:
   push:
     branches: [ master, main ]
+    # Each run scrapes Google Scholar, which blocks busy client IPs, so only
+    # pushes that change what this workflow runs trigger it.
+    paths:
+      - main.py
+      - openalex.py
+      - profile_deploy.py
+      - requirements.txt
+      - .github/workflows/build.yml
   schedule:
     # Run hourly, off minute 0: GitHub delays or drops scheduled runs at the
     # start of every hour under high load.
