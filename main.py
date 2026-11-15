@@ -24,6 +24,9 @@ from openalex import (
 
 DIST_DIR = Path("dist")
 STAGING_DIR = DIST_DIR / ".staging"
+# Only what the badges and citation.json use. The other sections (coauthors,
+# public_access) cost extra Google Scholar requests per profile.
+PROFILE_SECTIONS = ("basics", "indices", "counts", "publications")
 
 
 class ScholarProfileTimeout(TimeoutError):
@@ -135,34 +138,43 @@ def _dist_snapshot() -> dict[str, str]:
     return snapshot
 
 
-def _fill_author_worker(author_seed: dict, result_queue) -> None:
+def _fill_author_worker(author_seed: dict, sender) -> None:
     try:
-        result_queue.put(("success", scholarly.fill(author_seed, sortby="year")))
+        # scholarly sorts the sections list in place, so pass a fresh one.
+        author = scholarly.fill(author_seed, sections=list(PROFILE_SECTIONS), sortby="year")
+        sender.send(("success", author))
     except Exception as e:
-        result_queue.put(("error", e.__class__.__name__, str(e), traceback.format_exc()))
+        sender.send(("error", e.__class__.__name__, str(e), traceback.format_exc()))
+    finally:
+        sender.close()
 
 
 def _fill_author_with_timeout(author_seed: dict, timeout_seconds: int) -> dict:
     context = multiprocessing.get_context("fork")
-    result_queue = context.Queue(maxsize=1)
-    process = context.Process(target=_fill_author_worker, args=(author_seed, result_queue))
+    receiver, sender = context.Pipe(duplex=False)
+    process = context.Process(target=_fill_author_worker, args=(author_seed, sender))
     process.start()
-    process.join(timeout_seconds)
-
-    if process.is_alive():
-        process.terminate()
+    # Keep the child as the only writer, so its death shows up as EOF.
+    sender.close()
+    try:
+        # Read before joining: a child sending more than the pipe buffer holds
+        # cannot exit until the result is consumed.
+        if not receiver.poll(timeout_seconds):
+            process.terminate()
+            raise ScholarProfileTimeout(
+                f"Google Scholar profile timed out after {timeout_seconds} seconds"
+            )
+        try:
+            result = receiver.recv()
+        except EOFError:
+            raise RuntimeError("Google Scholar profile worker exited without a result") from None
+    finally:
+        receiver.close()
         process.join(5)
         if process.is_alive():
             process.kill()
             process.join()
-        raise ScholarProfileTimeout(
-            f"Google Scholar profile timed out after {timeout_seconds} seconds"
-        )
 
-    if result_queue.empty():
-        raise RuntimeError("Google Scholar profile worker exited without a result")
-
-    result = result_queue.get()
     if result[0] == "success":
         return result[1]
 
@@ -246,6 +258,7 @@ def generate_scholar_to_dir(
         citation_metadata["google_scholar"]["error"] = "Max proxy retries exceeded"
         return {
             "success": False,
+            "blocked": True,
             "metadata": citation_metadata,
             "reason": "Max proxy retries exceeded",
         }
@@ -255,6 +268,7 @@ def generate_scholar_to_dir(
         citation_metadata["google_scholar"]["error"] = str(e)
         return {
             "success": False,
+            "blocked": True,
             "metadata": citation_metadata,
             "reason": str(e),
         }
@@ -475,6 +489,7 @@ def main() -> None:
     profile_statuses = []
     previous_profile_data = {}
     previous_profile_review = {}
+    blocked_at = None
 
     for scholar_id in scholar_ids:
         staged_profile_dir = STAGING_DIR / scholar_id
@@ -485,9 +500,18 @@ def main() -> None:
             previous_profile_review[scholar_id] = review_path.read_bytes()
         elif scholar_id == scholar_ids[0] and (DIST_DIR / "review.svg").exists():
             previous_profile_review[scholar_id] = (DIST_DIR / "review.svg").read_bytes()
-        result = generate_scholar_to_dir(
-            scholar_id, staged_profile_dir, profile_timeout_seconds
-        )
+        if blocked_at is None:
+            result = generate_scholar_to_dir(
+                scholar_id, staged_profile_dir, profile_timeout_seconds
+            )
+            if result.get("blocked"):
+                blocked_at = scholar_id
+        else:
+            # Google Scholar blocks per client IP, so the remaining profiles
+            # would only wait out the same timeout and keep hitting the block.
+            reason = f"Skipped: Google Scholar stopped responding at {blocked_at}"
+            print(f"{reason}, skip google scholar badges for {scholar_id}", flush=True)
+            result = {"success": False, "reason": reason}
         profile_results[scholar_id] = result
 
         if result["success"]:

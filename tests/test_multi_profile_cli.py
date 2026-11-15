@@ -48,8 +48,12 @@ class MultiProfileCliTest(unittest.TestCase):
             pass
 
         class FakeScholarly:
-            def fill(self, author_seed, sortby=None):
+            def fill(self, author_seed, sections=None, sortby=None):
                 self.assert_sortby(sortby)
+                # Only the sections that feed the badges; the others cost
+                # extra Google Scholar requests.
+                if sorted(sections or []) != ["basics", "counts", "indices", "publications"]:
+                    raise AssertionError(f"Unexpected sections: {sections!r}")
                 scholar_id = author_seed["scholar_id"]
                 result = authors[scholar_id]
                 if isinstance(result, Exception):
@@ -464,6 +468,61 @@ class MultiProfileCliTest(unittest.TestCase):
         self.assertTrue((dist / "id1" / "all.svg").exists())
         self.assertFalse((dist / "id2" / "citation.json").exists())
         self.assertEqual((self.temp_dir / "citation_updated.flag").read_text(), "true")
+
+    def test_profile_larger_than_pipe_buffer_does_not_time_out(self):
+        author = self.author("id1", 12)
+        author["publications"] = [
+            {
+                "author_pub_id": f"id1:paper{index}",
+                "num_citations": index,
+                "bib": {
+                    "title": f"A reasonably long publication title number {index}",
+                    "pub_year": "2026",
+                    "citation": "Example Journal 12 (3), 45-67, 2026",
+                    "author_line": "A Author, B Author, C Author, D Author, ...",
+                },
+                "citedby_url": f"https://scholar.google.com/scholar?cites={index:020d}",
+            }
+            for index in range(600)
+        ]
+
+        self.temp_dir, _ = self.run_main("id1", {"id1": author}, timeout=5)
+
+        data = json.loads((self.temp_dir / "dist" / "citation.json").read_text(encoding="utf-8"))
+        self.assertEqual(data["google_scholar"]["status"], "success")
+        self.assertEqual(len(data["google_scholar"]["publications"]), 600)
+
+    def test_timeout_skips_remaining_profiles(self):
+        def slow_id2():
+            time.sleep(2)
+            return self.author("id2", 20)
+
+        self.temp_dir, output = self.run_main(
+            "id1,id2,id3",
+            {
+                "id1": self.author("id1", 12),
+                "id2": slow_id2,
+                "id3": self.author("id3", 30),
+            },
+            timeout=1,
+        )
+
+        dist = self.temp_dir / "dist"
+        self.assertTrue((dist / "id1" / "citation.json").exists())
+        self.assertFalse((dist / "id2").exists())
+        self.assertFalse((dist / "id3").exists())
+        self.assertNotIn("Loading Google Scholar profile id3", output)
+        summary = (self.temp_dir / "summary.md").read_text(encoding="utf-8")
+        self.assertIn("Google Scholar (id3) | ❌ Failed", summary)
+        self.assertIn("Skipped: Google Scholar stopped responding at id2", summary)
+
+    def test_non_blocking_failure_does_not_skip_remaining_profiles(self):
+        self.temp_dir, _ = self.run_main(
+            "id1,id2",
+            {"id1": RuntimeError("profile page could not be parsed"), "id2": self.author("id2", 20)},
+        )
+
+        self.assertTrue((self.temp_dir / "dist" / "id2" / "citation.json").exists())
 
 
 if __name__ == "__main__":
