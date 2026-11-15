@@ -346,6 +346,7 @@ class BudgetTest(OpenAlexTestCase):
 
         self.assertEqual(summary["status"], "complete")
         self.assertEqual(self.sleeps, [1])
+        self.assertEqual(http.headers, [{"Authorization": "Bearer key"}] * 2)
         self.assertEqual(self.read_record(profile_dir, "id1:p1")["status"], "matched")
 
     def test_rate_limit_requiring_more_credits_than_remaining_is_budget(self):

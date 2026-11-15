@@ -117,10 +117,10 @@ class OpenAlexClient:
             if remaining is not None:
                 self.remaining = remaining
             if response.status_code == 429:
-                headers = _rate_limit_headers(response.headers)
-                print(f"OpenAlex 429 for {path}: {headers}", flush=True)
+                limit_headers = _rate_limit_headers(response.headers)
+                print(f"OpenAlex 429 for {path}: {limit_headers}", flush=True)
                 if not self._is_per_second_limit(response.headers):
-                    raise BudgetExhausted(f"Daily budget exhausted ({headers})")
+                    raise BudgetExhausted(f"Daily budget exhausted ({limit_headers})")
                 if attempt < MAX_RATE_LIMIT_RETRIES:
                     self.sleep(2**attempt)
                     continue
